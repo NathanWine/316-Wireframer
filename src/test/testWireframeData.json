@@ -1,0 +1,123 @@
+{
+	"wireframes": [
+		{
+			"key": 0,
+			"ownerid": 0,
+			"description": "my first wireframe",
+			"width": 500,
+			"height": 500,
+			"controls": [
+				{
+					"type": "container",
+					"top": 0,
+					"left": 0,
+					"height": 250,
+					"width": 250,
+					"backgroundColor": "#ffffff",
+					"borderColor": "#000000",
+					"borderThickness": 2,
+					"borderRadius": 3
+				},
+				{
+					"type": "label",
+					"top": 0,
+					"left": 0,
+					"height": 15,
+					"width": 250,
+					"text": "This is a label",
+					"fontSize": 12,
+					"backgroundColor": "#000000",
+					"borderColor": "#ff0000",
+					"textColor": "#ff0000",
+					"borderThickness": 1,
+					"borderRadius": 2
+				},
+				{
+					"type": "button",
+					"top": 100,
+					"left": 100,
+					"height": 25,
+					"width": 35,
+					"text": "Click Me!",
+					"fontSize": 10,
+					"backgroundColor": "#808080",
+					"borderColor": "#000000",
+					"textColor": "#000000",
+					"borderThickness": 1,
+					"borderRadius": 4
+				}
+			]
+		},
+		{
+			"key": 1,
+			"ownerid": 0,
+			"description": "my second wireframe",
+			"width": 1000,
+			"height": 1000,
+			"controls": [
+				{
+					"type": "container",
+					"top": 125,
+					"left": 125,
+					"height": 750,
+					"width": 750,
+					"backgroundColor": "#ffffff",
+					"borderColor": "#000000",
+					"borderThickness": 0,
+					"borderRadius": 0
+				},
+				{
+					"type": "textfield",
+					"top": 175,
+					"left": 175,
+					"height": 20,
+					"width": 350,
+					"text": "Sample text here",
+					"fontSize": 15,
+					"backgroundColor": "#ffffff",
+					"borderColor": "#ff0000",
+					"textColor": "#ff0000",
+					"borderThickness": 1,
+					"borderRadius": 2
+				}
+			]
+		},
+		{
+			"key": 2,
+			"ownerid": 1,
+			"description": "another user's first wireframe",
+			"width": 1500,
+			"height": 1500,
+			"controls": [
+				{
+					"type": "label",
+					"top": 400,
+					"left": 450,
+					"height": 100,
+					"width": 200,
+					"text": "Enter your ID below:",
+					"fontSize": 30,
+					"backgroundColor": "#ff0000",
+					"borderColor": "#000000",
+					"textColor": "#000000",
+					"borderThickness": 2,
+					"borderRadius": 3
+				},
+				{
+					"type": "textfield",
+					"top": 550,
+					"left": 450,
+					"height": 50,
+					"width": 200,
+					"text": "Placeholder Text",
+					"fontSize": 20,
+					"backgroundColor": "#ff0000",
+					"borderColor": "#000000",
+					"textColor": "#ffffff",
+					"borderThickness": 2,
+					"borderRadius": 3
+				}
+			]
+		}
+	]
+}
