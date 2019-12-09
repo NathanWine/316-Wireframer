@@ -9,29 +9,32 @@ class DatabaseTester extends React.Component {
     // DO THIS ANY TIME YOU LIKE WITHOUT HAVING
     // TO LOG IN
     handleClear = () => {
-        // const fireStore = getFirestore();
-        // fireStore.collection('todoLists').get().then(function(querySnapshot){
-        //     querySnapshot.forEach(function(doc) {
-        //         console.log("deleting " + doc.id);
-        //         fireStore.collection('todoLists').doc(doc.id).delete();
-        //     })
-        // });
+        const fireStore = getFirestore();
+        fireStore.collection('wireframes').get().then(function(querySnapshot){
+            querySnapshot.forEach(function(doc) {
+                console.log("deleting " + doc.id);
+                fireStore.collection('wireframes').doc(doc.id).delete();
+            })
+        });
     }
 
     handleReset = () => {
-        // const fireStore = getFirestore();
-        // todoJson.todoLists.forEach(todoListJson => {
-        //     fireStore.collection('todoLists').add({
-        //             name: todoListJson.name,
-        //             owner: todoListJson.owner,
-        //             items: todoListJson.items,
-        //             time: Date.now()
-        //         }).then(() => {
-        //             console.log("DATABASE RESET");
-        //         }).catch((err) => {
-        //             console.log(err);
-        //         });
-        // });
+        const fireStore = getFirestore();
+        todoJson.wireframes.forEach(wireframeJson => {
+            fireStore.collection('wireframes').add({
+                    ownerid: wireframeJson.ownerid,
+                    name: wireframeJson.name,
+                    width: wireframeJson.width,
+                    height: wireframeJson.height,
+                    key: wireframeJson.key,
+                    time: Date.now(),
+                    controls: wireframeJson.controls
+                }).then(() => {
+                    console.log("DATABASE RESET");
+                }).catch((err) => {
+                    console.log(err);
+                });
+        });
     }
 
     render() {

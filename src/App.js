@@ -28,7 +28,7 @@ class App extends Component {
               <Route path="/login" component={LoginScreen} />
               <Route path="/user/:userid/wireframe/:wireframeid" component={EditScreen} />
               <Route path="/:any" component={HomeScreen} />
-            </Switch> 
+            </Switch>
           </div>
         </BrowserRouter>
       );
