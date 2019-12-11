@@ -53,3 +53,7 @@ html {
     display: flex;
     flex-wrap: wrap;
   }
+
+  .drag_window {
+    padding: 0 !important;
+  }
