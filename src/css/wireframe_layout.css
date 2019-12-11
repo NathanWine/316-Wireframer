@@ -49,3 +49,7 @@ html {
     color: #ec407a !important;
   }
   
+  .flex {
+    display: flex;
+    flex-wrap: wrap;
+  }
