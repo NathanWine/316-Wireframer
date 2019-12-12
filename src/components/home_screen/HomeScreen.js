@@ -19,11 +19,12 @@ class HomeScreen extends Component {
             }}>
                 <div className="dashboard container">
                     <div className="row">
-                        <div className="col s12 m4">
+                        <div className="col s5">
+                            <h5 style={{display: 'inline-block', paddingInline: '20px', borderBottom: '3px solid black'}}>Recent Work</h5>
                             <WireframeLinks />
                         </div>
-                        <div className="col s8">
-                            <div className="banner">
+                        <div className="col s7">
+                            <div className="banner center-align">
                                 Wireframer
                             </div>
                             <div style={{ paddingTop: '15px' }} className="home_new_list_container center-align">

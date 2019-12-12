@@ -39,6 +39,22 @@ class DatabaseTester extends React.Component {
     }
 
     render() {
+        let firestore = getFirestore();
+        let history = this.props.history;
+        firestore.collection('users').doc(this.props.auth.uid).get().then(function(doc) {
+            if (doc.exists) {
+                if (!doc.data().admin) {
+                    console.log("not admin, returning")
+                    history.goBack();
+                }
+            } else {
+                // doc.data() will be undefined in this case
+                console.log("No such document!");
+            }
+        }).catch(function(error) {
+            console.log("Error getting document:", error);
+        });
+
         return (
             // <div className="blue" style={{height: '500px', width: '500px', position: 'relative', overflow: 'auto', padding: '0'}}>
             <div className="blue">

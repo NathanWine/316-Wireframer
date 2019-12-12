@@ -33,23 +33,46 @@ class EditScreen extends Component {
         if (!wireframe)
             return <React.Fragment />
 
+        let i = 0;
         return (
             <div className="purple" style={{ height: '600px', borderRadius: '0 0 10px 10px' }}>
                 <div className="row flex" style={{ height: 'inherit' }}>
                     <div className="col s2 grey z-depth-2 no_padding center-align" style={{ borderRadius: '0 0 0 10px' }}>
-                        Side bar
                         <div className="center-align" style={{ borderWidth: '2px', borderStyle: 'solid', borderRadius: '5px' }}>
                             <a className="waves-effect waves-light btn"><i className="material-icons small">zoom_in</i></a>
                             <a className="waves-effect waves-light btn"><i className="material-icons small">zoom_out</i></a>
                             <a className="waves-effect waves-light btn"><i className="material-icons small">save</i></a>
-                            <a onClick={this.goBack} className="waves-effect waves-light btn"><i className="material-icons small">keyboard_return</i></a>
+                            <a onClick={this.goBack} className="waves-effect waves-light btn pink accent-2"><i className="material-icons small">keyboard_return</i></a>
+                        </div>
+                        <div style={{ paddingTop: '50px' }}>
+                            <div style={{
+                                height: '60px', width: '125px', border: '2px solid black', 
+                                borderRadius: '5px', backgroundColor: '#eee', display: 'inline-block'
+                            }}></div>
+                            <p><b>Container</b></p>
+                        </div>
+                        <div style={{ paddingTop: '50px' }}>
+                            Prompt for Input:
+                            <p><b>Label</b></p>
+                        </div>
+                        <div style={{ paddingTop: '50px' }}>
+                            <button>Submit</button>
+                            <p><b>Button</b></p>
+                        </div>
+                        <div style={{ paddingTop: '50px' }}>
+                            <p><b>Textfield</b></p>
                         </div>
                     </div>
                     <div className="col s8 center-align no_padding" style={{ position: 'relative', overflow: 'auto', height: 'inherit' }}>
-                        <div className="grey lighten-3" style={{ height: wireframe.height, width: wireframe.width, display: 'inline-block', textAlign: 'left' }}>
+                        <div className="grey lighten-3" style={{ height: wireframe.height, width: wireframe.width, textAlign: 'left' }}>
                             <Draggable bounds="parent">
                                 <div style={{ display: 'inline-block', position: 'absolute' }}>Edit Screen</div>
                             </Draggable>
+                            {wireframe && wireframe.controls.map(control => (
+                                <Draggable bounds="parent" defaultPosition={{ x: control.left, y: control.top }} key={i++}>
+                                    <div style={{ display: 'inline-block', position: 'absolute' }}>{control.type}</div>
+                                </Draggable>
+                            ))}
                         </div>
                     </div>
                     <div className="col s2 grey z-depth-2" style={{ borderRadius: '0 0 10px 0' }}>
