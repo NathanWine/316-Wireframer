@@ -7,6 +7,22 @@ import Draggable from 'react-draggable'
 import { getFirestore } from 'redux-firestore';
 
 class EditScreen extends Component {
+
+    goBack = () => {
+        console.log("Going back")
+        this.props.history.goBack();
+    }
+
+    componentDidMount = () => {
+        if (this.props.wireframe) {
+            console.log("updating timestamp");
+            let firestore = getFirestore();
+            firestore.collection('wireframes').doc(this.props.wireframe.id).update({
+                time: Date.now()
+            })
+        }
+    }
+
     render() {
         const auth = this.props.auth;
         let wireframe = this.props.wireframe;
@@ -19,33 +35,21 @@ class EditScreen extends Component {
 
         return (
             <div className="purple" style={{ height: '600px', borderRadius: '0 0 10px 10px' }}>
-                <div className="row flex" style={{ height: 'inherit'}}>
-                    <div className="col s2 grey z-depth-2" style={{ borderRadius: '0 0 0 10px' }}>
-                        This is the side bar
+                <div className="row flex" style={{ height: 'inherit' }}>
+                    <div className="col s2 grey z-depth-2 no_padding center-align" style={{ borderRadius: '0 0 0 10px' }}>
+                        Side bar
+                        <div className="center-align" style={{ borderWidth: '2px', borderStyle: 'solid', borderRadius: '5px' }}>
+                            <a className="waves-effect waves-light btn"><i className="material-icons small">zoom_in</i></a>
+                            <a className="waves-effect waves-light btn"><i className="material-icons small">zoom_out</i></a>
+                            <a className="waves-effect waves-light btn"><i className="material-icons small">save</i></a>
+                            <a onClick={this.goBack} className="waves-effect waves-light btn"><i className="material-icons small">keyboard_return</i></a>
+                        </div>
                     </div>
-                    <div className="col s8 center-align drag_window" style={{ position: 'relative', overflow: 'auto', height: 'inherit' }}>
-                        <div className="grey lighten-3" style={{ height: wireframe.height, width: wireframe.width, display:'inline-block' }}>
+                    <div className="col s8 center-align no_padding" style={{ position: 'relative', overflow: 'auto', height: 'inherit' }}>
+                        <div className="grey lighten-3" style={{ height: wireframe.height, width: wireframe.width, display: 'inline-block', textAlign: 'left' }}>
                             <Draggable bounds="parent">
-                                <div style={{ display: 'inline-block' }}>Edit Screen</div>
+                                <div style={{ display: 'inline-block', position: 'absolute' }}>Edit Screen</div>
                             </Draggable>
-                            <Draggable
-                                axis="x"
-                                bounds="parent"
-                                handle=".handle"
-                                defaultPosition={{ x: 0, y: 0 }}
-                                position={null}
-                                grid={[25, 25]}
-                                scale={1}
-                                onStart={this.handleStart}
-                                onDrag={this.handleDrag}
-                                onStop={this.handleStop}>
-                                <div style={{ display: 'inline-block' }}>
-                                    <div className="handle">Drag from here</div>
-                                    <div>This readme is really dragging on...</div>
-                                </div>
-                            </Draggable>
-                            <div>{wireframe.name}</div>
-                            <div>{wireframe.width}</div>
                         </div>
                     </div>
                     <div className="col s2 grey z-depth-2" style={{ borderRadius: '0 0 10px 0' }}>

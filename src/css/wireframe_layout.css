@@ -54,6 +54,6 @@ html {
     flex-wrap: wrap;
   }
 
-  .drag_window {
+  .no_padding {
     padding: 0 !important;
   }

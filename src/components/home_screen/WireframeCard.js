@@ -1,10 +1,17 @@
 import React from 'react';
+import { getFirestore } from 'redux-firestore'
 
 class WireframeCard extends React.Component {
     deleteList = (e) => {
         e.stopPropagation();
         e.preventDefault();
         console.log("Deleting wireframe", this.props.wireframe);
+        let firestore = getFirestore();
+        firestore.collection('wireframes').doc(this.props.wireframe.id).delete().then(function () {
+            console.log("Document successfully deleted!");
+        }).catch(function (error) {
+            console.error("Error removing document: ", error);
+        });
     }
 
     render() {
