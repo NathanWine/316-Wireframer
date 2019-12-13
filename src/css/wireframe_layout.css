@@ -57,3 +57,11 @@ html {
   .no_padding {
     padding: 0 !important;
   }
+
+  .clickable:hover {
+    cursor: pointer;
+  }
+
+  .moveable:hover {
+    cursor: grab;
+  }

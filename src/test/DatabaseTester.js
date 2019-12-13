@@ -3,6 +3,7 @@ import { connect } from 'react-redux';
 import todoJson from './testWireframeData.json'
 import { getFirestore } from 'redux-firestore';
 import Draggable from 'react-draggable';
+import { Button } from 'react-materialize';
 
 class DatabaseTester extends React.Component {
 
@@ -58,11 +59,7 @@ class DatabaseTester extends React.Component {
         return (
             // <div className="blue" style={{height: '500px', width: '500px', position: 'relative', overflow: 'auto', padding: '0'}}>
             <div className="blue">
-                <div className="grey" style={{ height: '1000px', width: '1000px', position: 'relative' }}>
-                    <Draggable bounds="parent">
-                        <div style={{ display: 'inline-block' }}>Edit Screen</div>
-                    </Draggable>
-                </div>
+                <Button tooltip="tooltip"></Button>
                 <button onClick={this.handleClear}>Clear Database</button>
                 <button onClick={this.handleReset}>Reset Database</button>
             </div>)
