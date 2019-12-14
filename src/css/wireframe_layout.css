@@ -65,3 +65,9 @@ html {
   .moveable:hover {
     cursor: grab;
   }
+
+  .handle {
+    width:5px;
+    height:5px;
+    border: 2px solid black;
+  }

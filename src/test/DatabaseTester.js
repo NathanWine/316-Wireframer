@@ -3,6 +3,7 @@ import { connect } from 'react-redux';
 import todoJson from './testWireframeData.json'
 import { getFirestore } from 'redux-firestore';
 import Draggable from 'react-draggable';
+import {Rnd} from 'react-rnd';
 import { Button } from 'react-materialize';
 
 class DatabaseTester extends React.Component {
@@ -42,7 +43,7 @@ class DatabaseTester extends React.Component {
     render() {
         let firestore = getFirestore();
         let history = this.props.history;
-        firestore.collection('users').doc(this.props.auth.uid).get().then(function(doc) {
+        firestore.collection('users').doc(this.props.auth.uid).get().then(function (doc) {
             if (doc.exists) {
                 if (!doc.data().admin) {
                     console.log("not admin, returning")
@@ -52,7 +53,7 @@ class DatabaseTester extends React.Component {
                 // doc.data() will be undefined in this case
                 console.log("No such document!");
             }
-        }).catch(function(error) {
+        }).catch(function (error) {
             console.log("Error getting document:", error);
         });
 

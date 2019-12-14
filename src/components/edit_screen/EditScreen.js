@@ -4,6 +4,7 @@ import { connect } from 'react-redux';
 import { compose } from 'redux';
 import { firestoreConnect } from 'react-redux-firebase';
 import Draggable from 'react-draggable'
+import { Rnd } from 'react-rnd'
 import { getFirestore } from 'redux-firestore';
 import { Button, Icon } from 'react-materialize';
 
@@ -117,7 +118,7 @@ class EditScreen extends Component {
                         </div>
                         <div style={{ paddingTop: '50px' }}>
                             <button className="clickable disabled" style={{
-                                border: '2px solid black', borderRadius: '5px', width: '60%',
+                                border: '2px solid black', borderRadius: '5px', width: '50%',
                                 height: '30px', backgroundColor: 'lightgray'
                             }}>Submit</button>
                             <p><b>Button</b></p>
@@ -133,9 +134,31 @@ class EditScreen extends Component {
                     <div onClick={this.removeFocus} className="col s8 center-align no_padding" style={{ position: 'relative', overflow: 'auto', height: 'inherit', backgroundImage: 'linear-gradient(to bottom, #808080, #484848)' }}>
                         <div className="grey lighten-3" style={{ height: this.state.height, width: this.state.width, textAlign: 'left' }}>
                             {wireframe && wireframe.controls.map(control => (
-                                <Draggable bounds="parent" defaultPosition={{ x: control.left, y: control.top }} key={i++}>
-                                    <div onClick={(e) => { this.focusChange(e, control) }} className="moveable" style={{ display: 'inline-block', position: 'absolute' }}>{control.type}</div>
-                                </Draggable>
+                                // <Draggable bounds="parent" defaultPosition={{ x: control.left, y: control.top }} key={i++}>
+                                //     <div onClick={(e) => { this.focusChange(e, control) }} className="moveable" style={{ display: 'inline-block', position: 'absolute' }}>{control.type}</div>
+                                // </Draggable>
+                                focus === control ?
+                                    <Rnd bounds='parent'
+                                        resizeHandleClasses={{
+                                            bottomLeft: "handle",
+                                            bottomRight: "handle",
+                                            topLeft: "handle",
+                                            topRight: "handle"
+                                        }}
+                                        default={{
+                                            x: control.left,
+                                            y: control.top,
+                                            width: control.width,
+                                            height: control.height,
+                                        }}
+                                        enableResizing={{
+                                            top: false, right: false, bottom: false, left: false,
+                                            topRight: true, bottomRight: true, bottomLeft: true, topLeft: true
+                                        }}>
+                                        <div onClick={(e) => { this.focusChange(e, control) }} className="moveable" style={{ display: 'inline-block', position: 'absolute', overflow: 'hidden', width: control.width, height: control.height}}>{control.type}</div>
+                                    </Rnd>
+                                    : <div onClick={(e) => { this.focusChange(e, control) }} className="moveable"
+                                        style={{ display: 'inline-block', position: 'absolute', overflow: 'hidden', top: control.top, left: control.left, width: control.width, height: control.height }}>{control.type}</div>
                             ))}
                         </div>
                     </div>
@@ -144,16 +167,16 @@ class EditScreen extends Component {
                             <div>
                                 <b>Properties</b>
                                 {focus.text ?
-                                <div>
-                                    <b>Text: </b> {focus.text}
-                                </div>
-                                : null}
+                                    <div>
+                                        <b>Text: </b> {focus.text}
+                                    </div>
+                                    : null}
                                 {focus.fontSize ?
                                     <div>
                                         <b>Font Size: </b> {focus.fontSize}
                                     </div>
                                     : null}
-                                {focus.fontColor ? 
+                                {focus.fontColor ?
                                     <div>
                                         <b>Font Color: </b> {focus.fontColor}
                                     </div>
