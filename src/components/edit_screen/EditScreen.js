@@ -3,14 +3,9 @@ import { Redirect } from 'react-router-dom'
 import { connect } from 'react-redux';
 import { compose } from 'redux';
 import { firestoreConnect } from 'react-redux-firebase';
-import Draggable from 'react-draggable'
 import { Rnd } from 'react-rnd'
 import { getFirestore } from 'redux-firestore';
 import { Button, Icon } from 'react-materialize';
-
-const Box = () => (
-    <div style={{ backgroundColor: 'black', width: '100px', height: '100px' }}></div>
-);
 
 class EditScreen extends Component {
 
@@ -19,6 +14,7 @@ class EditScreen extends Component {
         width: this.props.wireframe.width,
         focus: null,
         controls: this.props.wireframe.controls,
+        savable: false
     }
 
     newHeight = this.props.wireframe.height;
@@ -30,7 +26,8 @@ class EditScreen extends Component {
             && this.newHeight <= 5000 && this.newWidth >= 1 && this.newWidth <= 5000) {
             this.setState({
                 height: parseInt(this.newHeight),
-                width: parseInt(this.newWidth)
+                width: parseInt(this.newWidth),
+                savable: true
             })
         }
         else
@@ -49,13 +46,23 @@ class EditScreen extends Component {
     }
 
     goBack = () => {
-        console.log("Going back")
         this.props.history.goBack();
+    }
+
+    saveWireframe = () => {
+        this.setState({
+            savable: false
+        });
+        let firestore = getFirestore();
+        firestore.collection("wireframes").doc(this.props.wireframe.id).update({
+            height: this.state.height,
+            width: this.state.width,
+            controls: this.state.controls,
+        });
     }
 
     componentDidMount = () => {
         if (this.props.wireframe) {
-            console.log("updating timestamp");
             let firestore = getFirestore();
             firestore.collection('wireframes').doc(this.props.wireframe.id).update({
                 time: Date.now()
@@ -65,11 +72,10 @@ class EditScreen extends Component {
 
     focusChange = (e, control) => {
         e.stopPropagation();
-        console.log("CHANGING FOCUS")
-        console.log(control);
+        console.log("CHANGING FOCUS", control)
         this.setState({
             focus: control
-        })
+        });
     }
 
     removeFocus = () => {
@@ -79,13 +85,61 @@ class EditScreen extends Component {
         })
     }
 
+    onDragStart = (e) => {
+        e.stopPropagation();
+    }
+
+    onDragStop = (e, data) => {
+        e.stopPropagation();
+        e.preventDefault();
+        //let control = this.state.focus;
+        let controls = this.state.controls;
+        console.log("ON DRAG STOP DATA:", data);
+        console.log("ON DRAG STOP CONTROLS:", controls)
+        controls.forEach(ctrl => {
+            if (ctrl === this.state.focus) {
+                ctrl.top = data.y;
+                ctrl.left = data.x;
+            }
+        });
+        console.log(controls);
+        this.setState({
+            controls: controls,
+            savable: true,
+        });
+    }
+
+    onResizeStart = (e, dir, refToElement) => {
+        console.log("ON RESIZE START");
+        console.log(e);
+        console.log(dir);
+        console.log(refToElement);
+    }
+
+    onResizeStop = (e, dir, refToElement, delta, position) => {
+        console.log("ON RESIZE STOP");
+        console.log(delta);
+        console.log(position);
+        let controls = this.state.controls;
+        controls.forEach(ctrl => {
+            if (ctrl === this.state.focus) {
+                ctrl.left = parseInt(position.x);
+                ctrl.top = parseInt(position.y);
+                ctrl.width += delta.width;
+                ctrl.height += delta.height;
+            }
+        })
+        this.setState({
+            controls: controls,
+            savable: true,
+        });
+    }
+
     render() {
         const auth = this.props.auth;
         let wireframe = this.props.wireframe;
         let focus = this.state.focus;
-        console.log("wireframe prop:", wireframe);
         let controls = this.state.controls
-        console.log("controls:", controls)
 
         if (!auth.uid)
             return <Redirect to="/" />;
@@ -96,11 +150,11 @@ class EditScreen extends Component {
         return (
             <div style={{ height: '700px', borderRadius: '0 0 10px 10px' }}>
                 <div className="row flex" style={{ height: 'inherit' }}>
-                    <div className="col s2 z-depth-2 no_padding center-align" style={{ borderRadius: '0 0 0 10px', backgroundColor: '#7F5A95' }}>
+                    <div className="col s2 z-depth-2 no_padding center-align" style={{ borderRadius: '0 0 0 10px', backgroundImage: 'linear-gradient(to bottom, #955a90, #7f5a95)' }}>
                         <div className="center-align" style={{ borderWidth: '2px', borderStyle: 'solid', borderRadius: '0 0 5px 5px' }}>
                             <Button><Icon>zoom_in</Icon></Button>
                             <Button><Icon>zoom_out</Icon></Button>
-                            <Button tooltip="Save wireframe" tooltipOptions={{ position: 'top' }}><Icon>save</Icon></Button>
+                            <Button className={this.state.savable ? "" : "disabled"} onClick={this.saveWireframe} tooltip="Save wireframe" tooltipOptions={{ position: 'top' }}><Icon>save</Icon></Button>
                             <Button tooltip="Go back" tooltipOptions={{ position: 'top' }} onClick={this.goBack} className="pink accent-2"><Icon>keyboard_return</Icon></Button>
                         </div>
 
@@ -144,13 +198,9 @@ class EditScreen extends Component {
                             <p><b>Textfield</b></p>
                         </div>
                     </div>
-                    <div onClick={this.removeFocus} className="col s8 center-align no_padding" style={{ position: 'relative', overflow: 'auto', height: 'inherit', backgroundImage: 'linear-gradient(to bottom, #808080, #484848)' }}>
+                    <div onMouseDown={this.removeFocus} className="col s8 center-align no_padding" style={{ position: 'relative', overflow: 'auto', height: 'inherit', backgroundImage: 'linear-gradient(to bottom, #808080, #484848)' }}>
                         <div className="grey lighten-3" style={{ height: this.state.height, width: this.state.width, textAlign: 'left' }}>
-                            {/* {wireframe && wireframe.controls.map(control => ( */}
                             {controls && controls.map(control => (
-                                // <Draggable bounds="parent" defaultPosition={{ x: control.left, y: control.top }} key={i++}>
-                                //     <div onClick={(e) => { this.focusChange(e, control) }} className="moveable" style={{ display: 'inline-block', position: 'absolute' }}>{control.type}</div>
-                                // </Draggable>
                                 focus === control ?
                                     <Rnd key={i++} bounds='parent'
                                         resizeHandleClasses={{
@@ -168,8 +218,10 @@ class EditScreen extends Component {
                                         enableResizing={{
                                             top: false, right: false, bottom: false, left: false,
                                             topRight: true, bottomRight: true, bottomLeft: true, topLeft: true
-                                        }}>
-                                        <div key={i++} onClick={(e) => { this.focusChange(e, control) }} className="moveable"
+                                        }}
+                                        onDragStop={this.onDragStop} onDragStart={this.onDragStart} 
+                                        onResizeStart={this.onResizeStart} onResizeStop={this.onResizeStop} >
+                                        <div key={i++} className="moveable"
                                             style={{
                                                 display: 'inline-block', position: 'absolute', overflow: 'hidden', width: '100%',
                                                 height: '100%', fontSize: control.fontSize, color: control.textColor,
@@ -177,7 +229,7 @@ class EditScreen extends Component {
                                                 border: control.borderThickness, borderRadius: control.borderRadius, borderStyle: 'solid'
                                             }}>{control.text}</div>
                                     </Rnd>
-                                    : <div key={i++} onClick={(e) => { this.focusChange(e, control) }} className="moveable"
+                                    : <div key={i++} onMouseDown={(e) => { this.focusChange(e, control) }} className="moveable"
                                         style={{
                                             display: 'inline-block', position: 'absolute', overflow: 'hidden', top: control.top,
                                             left: control.left, width: control.width, height: control.height, fontSize: control.fontSize,
@@ -187,7 +239,7 @@ class EditScreen extends Component {
                             ))}
                         </div>
                     </div>
-                    <div className="col s2 z-depth-2" style={{ borderRadius: '0 0 10px 0', backgroundColor: '#7F5A95' }}>
+                    <div className="col s2 z-depth-2" style={{ borderRadius: '0 0 10px 0', backgroundImage: 'linear-gradient(to bottom, #955a90, #7f5a95)' }}>
                         {this.state.focus ?
                             <div>
                                 <b>Properties</b>

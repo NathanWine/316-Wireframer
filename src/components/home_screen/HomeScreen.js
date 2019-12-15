@@ -7,6 +7,22 @@ import WireframeLinks from './WireframeLinks'
 import { getFirestore } from 'redux-firestore';
 
 class HomeScreen extends Component {
+    deleteWireframe = (id) => {
+        console.log("Deleting something:", id);
+        let firestore = getFirestore();
+        firestore.collection('wireframes').doc(id).delete().then(function () {
+            console.log("Document successfully deleted!");
+        }).catch(function (error) {
+            console.error("Error removing document: ", error);
+        });
+    }
+
+    goTo = (id) => {
+        console.log("Going somewhere", id);
+        this.props.history.push({
+            pathname: "/user/" + this.props.auth.uid + "/wireframe/" + id
+        })
+    }
     render() {
         if (!this.props.auth.uid) {
             return <Redirect to="/login" />;
@@ -20,8 +36,7 @@ class HomeScreen extends Component {
                 <div className="dashboard container">
                     <div className="row">
                         <div className="col s5">
-                            <h5 style={{display: 'inline-block', paddingInline: '20px', borderBottom: '3px solid black'}}>Recent Work</h5>
-                            <WireframeLinks />
+                            <WireframeLinks deleteWireframe={this.deleteWireframe} goTo={this.goTo} />
                         </div>
                         <div className="col s7">
                             <div className="banner center-align">
