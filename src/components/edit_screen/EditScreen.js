@@ -14,19 +14,22 @@ class EditScreen extends Component {
         width: this.props.wireframe.width,
         focus: null,
         controls: this.props.wireframe.controls,
-        savable: false
+        savable: false,
+        dimensionsChangable: false,
+        name: this.props.wireframe.name,
     }
 
     newHeight = this.props.wireframe.height;
     newWidth = this.props.wireframe.width;
+    newName = this.props.wireframe.name;
 
     updateDimensions = () => {
         console.log(this.newHeight, this.newWidth);
         if (!isNaN(this.newHeight) && !isNaN(this.newWidth) && this.newHeight >= 1
             && this.newHeight <= 5000 && this.newWidth >= 1 && this.newWidth <= 5000) {
             this.setState({
-                height: parseInt(this.newHeight),
-                width: parseInt(this.newWidth),
+                height: this.newHeight,
+                width: this.newWidth,
                 savable: true
             })
         }
@@ -37,12 +40,48 @@ class EditScreen extends Component {
 
     changeWidth = (e) => {
         const { target } = e;
-        this.newWidth = target.value;
+        if (this.state.width !== parseInt(target.value)) {
+            this.setState({
+                dimensionsChangable: true
+            });
+        }
+        else if (this.newHeight === this.state.height) {
+            this.setState({
+                dimensionsChangable: false
+            });
+        }
+        this.newWidth = parseInt(target.value);
     }
 
     changeHeight = (e) => {
         const { target } = e;
-        this.newHeight = target.value;
+        if (this.state.height !== parseInt(target.value)) {
+            this.setState({
+                dimensionsChangable: true
+            });
+        }
+        else if (this.newWidth === this.state.width) {
+            this.setState({
+                dimensionsChangable: false
+            });
+        }
+        this.newHeight = parseInt(target.value);
+    }
+
+    changeName = (e) => {
+        const { target } = e;
+        console.log(target.value, this.state.name)
+        this.newName = target.value;
+        if (target.value !== this.state.name && !this.state.savable) {
+            this.setState({
+                savable: true
+            });
+        }
+        else if (target.value === this.state.name && this.state.savable) {
+            this.setState({
+                savable: false
+            })
+        }
     }
 
     goBack = () => {
@@ -58,6 +97,7 @@ class EditScreen extends Component {
             height: this.state.height,
             width: this.state.width,
             controls: this.state.controls,
+            name: this.newName,
         });
     }
 
@@ -68,6 +108,44 @@ class EditScreen extends Component {
                 time: Date.now()
             })
         }
+    }
+
+    addControl = (control) => {
+        let controls = this.state.controls;
+        controls.push(control);
+        this.setState({controls: controls});
+    }
+
+    addContainer = () => {
+        console.log("Adding a container");
+        this.addControl({
+            backgroundColor: '#ffffff', borderColor: "#000000", borderRadius: 5, borderThickness: 2, 
+            height: 60, left: 0, top: 0, type: "container", width: 125
+        })
+    }
+
+    addLabel = () => {
+        console.log("Adding a label");
+        this.addControl({
+            backgroundColor: '#ffffff', borderColor: "#000000", borderRadius: 5, borderThickness: 0, fontSize: 12, 
+            height: 30, left: 0, text: 'Prompt for Input', textColor: "#000000", top: 0, type: "label", width: 130
+        });
+    }
+
+    addButton = () => {
+        console.log("Adding a button");
+        this.addControl({
+            backgroundColor: '#d3d3d3', borderColor: "#000000", borderRadius: 5, borderThickness: 2, fontSize: 12, 
+            height: 35, left: 0, text: 'Submit', textColor: "#000000", top: 0, type: "button", width: 130
+        })
+    }
+
+    addTextfield = () => {
+        console.log("Adding a textfield");
+        this.addControl({
+            backgroundColor: '#ffffff', borderColor: "#000000", borderRadius: 5, borderThickness: 2, fontSize: 12, 
+            height: 30, left: 0, text: 'Input', textColor: "#808080", top: 0, type: "textfield", width: 160
+        });
     }
 
     focusChange = (e, control) => {
@@ -92,34 +170,20 @@ class EditScreen extends Component {
     onDragStop = (e, data) => {
         e.stopPropagation();
         e.preventDefault();
-        //let control = this.state.focus;
         let controls = this.state.controls;
-        console.log("ON DRAG STOP DATA:", data);
-        console.log("ON DRAG STOP CONTROLS:", controls)
         controls.forEach(ctrl => {
             if (ctrl === this.state.focus) {
-                ctrl.top = data.y;
-                ctrl.left = data.x;
+                ctrl.top = parseInt(data.y);
+                ctrl.left = parseInt(data.x);
             }
         });
-        console.log(controls);
         this.setState({
             controls: controls,
             savable: true,
         });
     }
 
-    onResizeStart = (e, dir, refToElement) => {
-        console.log("ON RESIZE START");
-        console.log(e);
-        console.log(dir);
-        console.log(refToElement);
-    }
-
     onResizeStop = (e, dir, refToElement, delta, position) => {
-        console.log("ON RESIZE STOP");
-        console.log(delta);
-        console.log(position);
         let controls = this.state.controls;
         controls.forEach(ctrl => {
             if (ctrl === this.state.focus) {
@@ -139,7 +203,8 @@ class EditScreen extends Component {
         const auth = this.props.auth;
         let wireframe = this.props.wireframe;
         let focus = this.state.focus;
-        let controls = this.state.controls
+        let controls = this.state.controls;
+        console.log("Controls:", controls);
 
         if (!auth.uid)
             return <Redirect to="/" />;
@@ -148,7 +213,7 @@ class EditScreen extends Component {
 
         let i = 0;
         return (
-            <div style={{ height: '700px', borderRadius: '0 0 10px 10px' }}>
+            <div style={{ height: '755px', borderRadius: '0 0 10px 10px' }}>
                 <div className="row flex" style={{ height: 'inherit' }}>
                     <div className="col s2 z-depth-2 no_padding center-align" style={{ borderRadius: '0 0 0 10px', backgroundImage: 'linear-gradient(to bottom, #955a90, #7f5a95)' }}>
                         <div className="center-align" style={{ borderWidth: '2px', borderStyle: 'solid', borderRadius: '0 0 5px 5px' }}>
@@ -157,8 +222,13 @@ class EditScreen extends Component {
                             <Button className={this.state.savable ? "" : "disabled"} onClick={this.saveWireframe} tooltip="Save wireframe" tooltipOptions={{ position: 'top' }}><Icon>save</Icon></Button>
                             <Button tooltip="Go back" tooltipOptions={{ position: 'top' }} onClick={this.goBack} className="pink accent-2"><Icon>keyboard_return</Icon></Button>
                         </div>
-
-                        <div className="valign-wrapper" style={{ paddingTop: '15px' }}>
+                        <div className="row" style={{marginBottom: '0px', marginTop: '10px'}}>
+                            <div className="input-field col s10 offset-s1">
+                                <input defaultValue={wireframe.name} id="name" type="text" onChange={this.changeName} />
+                                <label className="active" htmlFor="name">Name</label>
+                            </div>
+                        </div>
+                        <div className="valign-wrapper">
                             <div className="input-field col s4">
                                 <input defaultValue={wireframe.width} id="width" type="text" onChange={this.changeWidth} />
                                 <label className="active" htmlFor="width">Width</label>
@@ -168,30 +238,33 @@ class EditScreen extends Component {
                                 <label className="active" htmlFor="height">Height</label>
                             </div>
                             <div className="col s4">
-                                <Button onClick={this.updateDimensions} tooltip="Update dimensions" tooltipOptions={{ position: 'top' }}> <Icon>update</Icon></Button>
+                                <Button className={this.state.dimensionsChangable ? "" : "disabled"}
+                                    onClick={this.updateDimensions} tooltip="Update dimensions" tooltipOptions={{ position: 'top' }}>
+                                    <Icon>update</Icon>
+                                </Button>
                             </div>
                         </div>
 
-                        <div style={{ paddingTop: '35px' }}>
-                            <div className="clickable" style={{
+                        <div style={{ paddingTop: '15px' }}>
+                            <div onClick={this.addContainer} className="clickable" style={{
                                 height: '60px', width: '125px', border: '2px solid black',
                                 borderRadius: '5px', backgroundColor: '#eee', display: 'inline-block'
                             }}></div>
                             <p><b>Container</b></p>
                         </div>
-                        <div style={{ paddingTop: '50px' }}>
-                            <span className="clickable">Prompt for Input:</span>
+                        <div style={{ paddingTop: '35px' }}>
+                            <span onClick={this.addLabel} className="clickable">Prompt for Input:</span>
                             <p><b>Label</b></p>
                         </div>
-                        <div style={{ paddingTop: '50px' }}>
-                            <button className="clickable disabled" style={{
+                        <div style={{ paddingTop: '35px' }}>
+                            <button onClick={this.addButton} className="clickable" style={{
                                 border: '2px solid black', borderRadius: '5px', width: '50%',
                                 height: '30px', backgroundColor: 'lightgray'
                             }}>Submit</button>
                             <p><b>Button</b></p>
                         </div>
-                        <div style={{ paddingTop: '50px' }}>
-                            <div className="clickable" style={{
+                        <div style={{ paddingTop: '35px' }}>
+                            <div onClick={this.addTextfield} className="clickable" style={{
                                 height: '30px', width: '160px', border: '2px solid black', color: 'grey',
                                 borderRadius: '5px', backgroundColor: '#eee', display: 'inline-block', textAlign: 'left'
                             }}>Input</div>
@@ -219,14 +292,14 @@ class EditScreen extends Component {
                                             top: false, right: false, bottom: false, left: false,
                                             topRight: true, bottomRight: true, bottomLeft: true, topLeft: true
                                         }}
-                                        onDragStop={this.onDragStop} onDragStart={this.onDragStart} 
+                                        onDragStop={this.onDragStop} onDragStart={this.onDragStart}
                                         onResizeStart={this.onResizeStart} onResizeStop={this.onResizeStop} >
                                         <div key={i++} className="moveable"
                                             style={{
                                                 display: 'inline-block', position: 'absolute', overflow: 'hidden', width: '100%',
                                                 height: '100%', fontSize: control.fontSize, color: control.textColor,
                                                 backgroundColor: control.backgroundColor, borderColor: control.borderColor,
-                                                border: control.borderThickness, borderRadius: control.borderRadius, borderStyle: 'solid'
+                                                borderWidth: control.borderThickness, borderRadius: control.borderRadius, borderStyle: 'solid'
                                             }}>{control.text}</div>
                                     </Rnd>
                                     : <div key={i++} onMouseDown={(e) => { this.focusChange(e, control) }} className="moveable"
@@ -234,7 +307,7 @@ class EditScreen extends Component {
                                             display: 'inline-block', position: 'absolute', overflow: 'hidden', top: control.top,
                                             left: control.left, width: control.width, height: control.height, fontSize: control.fontSize,
                                             color: control.textColor, backgroundColor: control.backgroundColor, borderColor: control.borderColor,
-                                            border: control.borderThickness, borderRadius: control.borderRadius, borderStyle: 'solid'
+                                            borderWidth: control.borderThickness, borderRadius: control.borderRadius, borderStyle: 'solid'
                                         }}>{control.text}</div>
                             ))}
                         </div>

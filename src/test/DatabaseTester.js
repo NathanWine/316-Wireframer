@@ -2,7 +2,6 @@ import React from 'react'
 import { connect } from 'react-redux';
 import todoJson from './testWireframeData.json'
 import { getFirestore } from 'redux-firestore';
-import { Rnd } from 'react-rnd';
 
 class DatabaseTester extends React.Component {
 
