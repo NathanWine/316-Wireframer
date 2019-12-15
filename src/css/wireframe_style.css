@@ -71,11 +71,11 @@
   }
 
   /* label focus color */
-  .input-field input[type=text] + label {
+  .input-field input + label {
     color: #000 !important;
   }
   /* label underline focus color */
-  .input-field input[type=text] {
+  .input-field input {
     border-bottom: 1px solid #000 !important;
     box-shadow: 0 1px 0 0 #000 !important;
   }

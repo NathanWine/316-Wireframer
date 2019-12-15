@@ -23,6 +23,25 @@ class HomeScreen extends Component {
             pathname: "/user/" + this.props.auth.uid + "/wireframe/" + id
         })
     }
+
+    createNewWireframe = () => {
+        console.log("Creating new wireframe", this.props.auth.uid);
+        const firestore = getFirestore();
+        let key = -1;
+        firestore.collection("wireframes").get().then(res => key = res.size);
+        let newWireframeData = {
+            controls: [],
+            height: 1000,
+            key: key,
+            name: "Unnamed Wireframe",
+            ownerid: this.props.auth.uid,
+            time: Date.now(),
+            width: 1000
+        }
+        let newWireFrame = firestore.collection("wireframes").doc();
+        newWireFrame.set(newWireframeData).then(() => this.goTo(newWireFrame.id));
+    }
+
     render() {
         if (!this.props.auth.uid) {
             return <Redirect to="/login" />;
@@ -43,7 +62,7 @@ class HomeScreen extends Component {
                                 Wireframer
                             </div>
                             <div style={{ paddingTop: '15px' }} className="home_new_list_container center-align">
-                                <a onClick={this.handleNewList} className="waves-effect waves-light btn-large red accent-2 hoverable rounded">
+                                <a onClick={this.createNewWireframe} className="waves-effect waves-light btn-large red accent-2 hoverable rounded">
                                     <i className="material-icons right">library_add</i>Create a New Wireframe
                             </a>
                             </div>

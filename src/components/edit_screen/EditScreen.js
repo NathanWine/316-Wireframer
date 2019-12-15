@@ -5,7 +5,8 @@ import { compose } from 'redux';
 import { firestoreConnect } from 'react-redux-firebase';
 import { Rnd } from 'react-rnd'
 import { getFirestore } from 'redux-firestore';
-import { Button, Icon } from 'react-materialize';
+import { Button, Icon, Modal } from 'react-materialize';
+import { ChromePicker } from 'react-color'
 
 class EditScreen extends Component {
 
@@ -17,6 +18,9 @@ class EditScreen extends Component {
         savable: false,
         dimensionsChangable: false,
         name: this.props.wireframe.name,
+        displayFontPicker: false,
+        displayBackgroundPicker: false,
+        displayBorderPicker: false,
     }
 
     newHeight = this.props.wireframe.height;
@@ -34,8 +38,7 @@ class EditScreen extends Component {
             })
         }
         else
-            // CHANGE TO DISPLAY SOMETHING
-            console.log("Please enter valid numbers for dimensions")
+            alert("Dimensions must be numbers between 1 and 5000");
     }
 
     changeWidth = (e) => {
@@ -84,7 +87,9 @@ class EditScreen extends Component {
         }
     }
 
-    goBack = () => {
+    goBack = (save) => {
+        if (save)
+            this.saveWireframe();
         this.props.history.goBack();
     }
 
@@ -113,13 +118,13 @@ class EditScreen extends Component {
     addControl = (control) => {
         let controls = this.state.controls;
         controls.push(control);
-        this.setState({controls: controls});
+        this.setState({ controls: controls });
     }
 
     addContainer = () => {
         console.log("Adding a container");
         this.addControl({
-            backgroundColor: '#ffffff', borderColor: "#000000", borderRadius: 5, borderThickness: 2, 
+            backgroundColor: '#ffffff', borderColor: "#000000", borderRadius: 5, borderThickness: 2,
             height: 60, left: 0, top: 0, type: "container", width: 125
         })
     }
@@ -127,7 +132,7 @@ class EditScreen extends Component {
     addLabel = () => {
         console.log("Adding a label");
         this.addControl({
-            backgroundColor: '#ffffff', borderColor: "#000000", borderRadius: 5, borderThickness: 0, fontSize: 12, 
+            backgroundColor: '#ffffff', borderColor: "#000000", borderRadius: 5, borderThickness: 0, fontSize: 12,
             height: 30, left: 0, text: 'Prompt for Input', textColor: "#000000", top: 0, type: "label", width: 130
         });
     }
@@ -135,7 +140,7 @@ class EditScreen extends Component {
     addButton = () => {
         console.log("Adding a button");
         this.addControl({
-            backgroundColor: '#d3d3d3', borderColor: "#000000", borderRadius: 5, borderThickness: 2, fontSize: 12, 
+            backgroundColor: '#d3d3d3', borderColor: "#000000", borderRadius: 5, borderThickness: 2, fontSize: 12,
             height: 35, left: 0, text: 'Submit', textColor: "#000000", top: 0, type: "button", width: 130
         })
     }
@@ -143,8 +148,22 @@ class EditScreen extends Component {
     addTextfield = () => {
         console.log("Adding a textfield");
         this.addControl({
-            backgroundColor: '#ffffff', borderColor: "#000000", borderRadius: 5, borderThickness: 2, fontSize: 12, 
+            backgroundColor: '#ffffff', borderColor: "#000000", borderRadius: 5, borderThickness: 2, fontSize: 12,
             height: 30, left: 0, text: 'Input', textColor: "#808080", top: 0, type: "textfield", width: 160
+        });
+    }
+
+    modifyControl = (property, value) => {
+        console.log("Changing", property, "to", value);
+        let controls = this.state.controls;
+        controls.forEach(ctrl => {
+            if (ctrl === this.state.focus) {
+                ctrl[property] = value;
+            }
+        });
+        this.setState({
+            controls: controls,
+            savable: true,
         });
     }
 
@@ -215,14 +234,19 @@ class EditScreen extends Component {
         return (
             <div style={{ height: '755px', borderRadius: '0 0 10px 10px' }}>
                 <div className="row flex" style={{ height: 'inherit' }}>
-                    <div className="col s2 z-depth-2 no_padding center-align" style={{ borderRadius: '0 0 0 10px', backgroundImage: 'linear-gradient(to bottom, #955a90, #7f5a95)' }}>
+                    <div className="col s2 z-depth-2 no_padding center-align"
+                        style={{ borderRadius: '0 0 0 10px', backgroundImage: 'linear-gradient(to bottom, #955a90, #7f5a95)' }}>
                         <div className="center-align" style={{ borderWidth: '2px', borderStyle: 'solid', borderRadius: '0 0 5px 5px' }}>
                             <Button><Icon>zoom_in</Icon></Button>
                             <Button><Icon>zoom_out</Icon></Button>
-                            <Button className={this.state.savable ? "" : "disabled"} onClick={this.saveWireframe} tooltip="Save wireframe" tooltipOptions={{ position: 'top' }}><Icon>save</Icon></Button>
-                            <Button tooltip="Go back" tooltipOptions={{ position: 'top' }} onClick={this.goBack} className="pink accent-2"><Icon>keyboard_return</Icon></Button>
+                            <Button className={this.state.savable ? "" : "disabled"} onClick={this.saveWireframe}
+                                tooltip="Save wireframe" tooltipOptions={{ position: 'top' }}><Icon>save</Icon></Button>
+                            {this.state.savable ? <Button tooltip="Go back" tooltipOptions={{ position: 'top' }}
+                                className="pink accent-2 modal-trigger" href="#save_modal"><Icon>keyboard_return</Icon></Button>
+                                : <Button tooltip="Go back" tooltipOptions={{ position: 'top' }}
+                                className="pink accent-2" onClick={() => this.goBack(false)}><Icon>keyboard_return</Icon></Button>}
                         </div>
-                        <div className="row" style={{marginBottom: '0px', marginTop: '10px'}}>
+                        <div className="row" style={{ marginBottom: '0px', marginTop: '10px' }}>
                             <div className="input-field col s10 offset-s1">
                                 <input defaultValue={wireframe.name} id="name" type="text" onChange={this.changeName} />
                                 <label className="active" htmlFor="name">Name</label>
@@ -271,7 +295,8 @@ class EditScreen extends Component {
                             <p><b>Textfield</b></p>
                         </div>
                     </div>
-                    <div onMouseDown={this.removeFocus} className="col s8 center-align no_padding" style={{ position: 'relative', overflow: 'auto', height: 'inherit', backgroundImage: 'linear-gradient(to bottom, #808080, #484848)' }}>
+                    <div onMouseDown={this.removeFocus} className="col s8 center-align no_padding"
+                        style={{ position: 'relative', overflow: 'auto', height: 'inherit', backgroundImage: 'linear-gradient(to bottom, #808080, #484848)' }}>
                         <div className="grey lighten-3" style={{ height: this.state.height, width: this.state.width, textAlign: 'left' }}>
                             {controls && controls.map(control => (
                                 focus === control ?
@@ -312,40 +337,102 @@ class EditScreen extends Component {
                             ))}
                         </div>
                     </div>
-                    <div className="col s2 z-depth-2" style={{ borderRadius: '0 0 10px 0', backgroundImage: 'linear-gradient(to bottom, #955a90, #7f5a95)' }}>
+                    <div className="col s2 z-depth-2"
+                        style={{ borderRadius: '0 0 10px 0', backgroundImage: 'linear-gradient(to bottom, #955a90, #7f5a95)' }}>
                         {this.state.focus ?
                             <div>
-                                <b>Properties</b>
+                                <div style={{ paddingBottom: '20px', fontSize: '17px' }}><b>Properties</b></div>
                                 {focus.text ?
-                                    <div>
-                                        <b>Text: </b> {focus.text}
+                                    <div className="row" style={{ marginBottom: '0px' }}>
+                                        <div className="input-field col s10 offset-s1">
+                                            <input defaultValue={focus.text} id="text" type="text"
+                                                onChange={(e) => this.modifyControl("text", e.target.value)} />
+                                            <label className="active" htmlFor="text">Text</label>
+                                        </div>
                                     </div>
                                     : null}
                                 {focus.fontSize ?
-                                    <div>
-                                        <b>Font Size: </b> {focus.fontSize}
+                                    <div className="row valign-wrapper">
+                                        <b className="col s8">Font Size:</b>
+                                        <div className="input-field col s4">
+                                            <input defaultValue={focus.fontSize} id="fontSize" type="number"
+                                                onChange={(e) => {
+                                                    if (e.target.value && !isNaN(e.target.value)) {
+                                                        this.modifyControl("fontSize", parseInt(e.target.value));
+                                                    }
+                                                }} />
+                                        </div>
                                     </div>
                                     : null}
-                                {focus.fontColor ?
-                                    <div>
-                                        <b>Font Color: </b> {focus.fontColor}
+                                {focus.textColor ?
+                                    <div className="row valign-wrapper" style={{paddingBottom: '10px'}}>
+                                        <b className="col s9">Font Color:</b> {focus.fontColor}
+                                        <Button className="col s2" style={{ backgroundColor: focus.textColor, borderRadius: '15px' }}
+                                            onClick={() => this.setState({ displayFontPicker: !this.state.displayFontPicker })}></Button>
+                                        {this.state.displayFontPicker ? <div style={popover}>
+                                            <div style={cover} onClick={() => this.setState({ displayFontPicker: false })} />
+                                            <ChromePicker color={focus.textColor}
+                                                onChangeComplete={(color, e) => this.modifyControl('textColor', color.hex)}
+                                            />
+                                        </div> : null} <span className="col s1"></span>
                                     </div>
                                     : null}
-                                <div>
-                                    <b>Background: </b> {focus.backgroundColor}
+                                <div className="row valign-wrapper" style={{paddingBottom: '10px'}}>
+                                    <b className="col s9">Background:</b>
+                                    <Button className="col s2" style={{ backgroundColor: focus.backgroundColor, borderRadius: '15px' }}
+                                        onClick={() => this.setState({ displayBackgroundPicker: !this.state.displayBackgroundPicker })}></Button>
+                                    {this.state.displayBackgroundPicker ? <div style={popover}>
+                                        <div style={cover} onClick={() => this.setState({ displayBackgroundPicker: false })} />
+                                        <ChromePicker color={focus.backgroundColor}
+                                            onChangeComplete={(color, e) => this.modifyControl('backgroundColor', color.hex)}
+                                        />
+                                    </div> : null} <span className="col s1"></span>
                                 </div>
-                                <div>
-                                    <b>Border Color: </b> {focus.borderColor}
+                                <div className="row valign-wrapper">
+                                    <b className="col s9">Border Color:</b>
+                                    <Button className="col s2" style={{ backgroundColor: focus.borderColor, borderRadius: '15px' }}
+                                        onClick={() => this.setState({ displayBorderPicker: !this.state.displayBorderPicker })}></Button>
+                                    {this.state.displayBorderPicker ? <div style={popover}>
+                                        <div style={cover} onClick={() => this.setState({ displayBorderPicker: false })} />
+                                        <ChromePicker color={focus.borderColor}
+                                            onChangeComplete={(color, e) => this.modifyControl('borderColor', color.hex)}
+                                        />
+                                    </div> : null} <span className="col s1"></span>
                                 </div>
-                                <div>
-                                    <b>Border Thickness</b> {focus.borderThickness}
+                                <div className="row valign-wrapper" style={{marginBottom: '0'}}>
+                                    <b className="col s8">Border Thickness:</b>
+                                    <div className="input-field col s4">
+                                        <input defaultValue={focus.borderThickness} id="borderThickness" type="number"
+                                            onChange={(e) => {
+                                                if (e.target.value && !isNaN(e.target.value)) {
+                                                    this.modifyControl("borderThickness", parseInt(e.target.value));
+                                                }
+                                            }} />
+                                    </div>
                                 </div>
-                                <div>
-                                    <b>Border Radius: </b> {focus.borderRadius}
+                                <div className="row valign-wrapper">
+                                    <b className="col s8">Border Radius:</b>
+                                    <div className="input-field col s4">
+                                        <input defaultValue={focus.borderRadius} id="borderRadius" type="number"
+                                            onChange={(e) => {
+                                                if (e.target.value && !isNaN(e.target.value)) {
+                                                    this.modifyControl("borderRadius", parseInt(e.target.value));
+                                                }
+                                            }} />
+                                    </div>
                                 </div>
+                                <Button className="pink black-text accent-2" onClick={this.removeFocus}>Deselect control</Button>
                             </div>
                             : null}
                     </div>
+                    <Modal id="save_modal" header="Save Wireframe?" actions={
+                        <div className="grey lighten-2">
+                            <Button className="red accent-2" onClick={() => this.goBack(true)} modal="close">Yes</Button><span>  </span>
+                            <Button className="purple lighten-2" onClick={() => this.goBack(false)}>No</Button><span>  </span>
+                            <Button modal="close">Cancel</Button>
+                        </div>}>
+                        <p><b>Would you like to save changes before returning to the home screen?</b></p>
+                    </Modal>
                 </div>
             </div>
         )
@@ -364,6 +451,18 @@ const mapStateToProps = (state, ownProps) => {
         auth: state.firebase.auth,
     };
 };
+
+const popover = {
+    position: 'absolute',
+    zIndex: '1000',
+}
+const cover = {
+    position: 'fixed',
+    top: '0px',
+    right: '0px',
+    bottom: '0px',
+    left: '0px',
+}
 
 export default compose(
     connect(mapStateToProps),
