@@ -275,6 +275,7 @@ class EditScreen extends Component {
         let controls = this.state.controls;
         let scale = "scale(" + this.state.zoom + ")";
         console.log("Controls:", controls);
+        console.log("Focus", focus, this.state.focus);
 
         if (!auth.uid)
             return <Redirect to="/" />;
@@ -394,10 +395,10 @@ class EditScreen extends Component {
                     </div>
                     <div className="col s2 z-depth-2"
                         style={{ borderRadius: '0 0 10px 0', backgroundImage: 'linear-gradient(to bottom, #955a90, #7f5a95)' }}>
-                        {this.state.focus ?
+                        {focus ?
                             <div>
                                 <div style={{ paddingBottom: '20px', fontSize: '17px' }}><b>Properties</b></div>
-                                {focus.text ?
+                                {focus.text !== undefined ?
                                     <div className="row" style={{ marginBottom: '0px' }}>
                                         <div className="input-field col s10 offset-s1">
                                             <input defaultValue={focus.text} id="text" type="text"
