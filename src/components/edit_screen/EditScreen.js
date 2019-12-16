@@ -174,7 +174,7 @@ class EditScreen extends Component {
     addContainer = () => {
         console.log("Adding a container");
         this.addControl({
-            backgroundColor: '#ffffff', borderColor: "#000000", borderRadius: 5, borderThickness: 2,
+            backgroundColor: 'rgb(255, 255, 255, 1)', borderColor: "rgb(0, 0, 0, 1)", borderRadius: 5, borderThickness: 2,
             height: 60, left: 0, top: 0, type: "container", width: 125
         })
     }
@@ -182,24 +182,24 @@ class EditScreen extends Component {
     addLabel = () => {
         console.log("Adding a label");
         this.addControl({
-            backgroundColor: '#ffffff', borderColor: "#000000", borderRadius: 5, borderThickness: 0, fontSize: 12,
-            height: 30, left: 0, text: 'Prompt for Input', textColor: "#000000", top: 0, type: "label", width: 130
+            backgroundColor: 'rgb(255, 255, 255, 0)', borderColor: "rgb(0, 0, 0, 0)", borderRadius: 5, borderThickness: 0, fontSize: 12,
+            height: 30, left: 0, text: 'Prompt for Input', textColor: "rgb(0, 0, 0, 1)", top: 0, type: "label", width: 130
         });
     }
 
     addButton = () => {
         console.log("Adding a button");
         this.addControl({
-            backgroundColor: '#d3d3d3', borderColor: "#000000", borderRadius: 5, borderThickness: 2, fontSize: 12,
-            height: 35, left: 0, text: 'Submit', textColor: "#000000", top: 0, type: "button", width: 130
+            backgroundColor: 'rgb(211, 211, 211, 1)', borderColor: "rgb(0, 0, 0, 1)", borderRadius: 5, borderThickness: 2, fontSize: 12,
+            height: 35, left: 0, text: 'Submit', textColor: "rgb(0, 0, 0, 1)", top: 0, type: "button", width: 130
         })
     }
 
     addTextfield = () => {
         console.log("Adding a textfield");
         this.addControl({
-            backgroundColor: '#ffffff', borderColor: "#000000", borderRadius: 5, borderThickness: 2, fontSize: 12,
-            height: 30, left: 0, text: 'Input', textColor: "#808080", top: 0, type: "textfield", width: 160
+            backgroundColor: 'rgb(255, 255, 255, 1)', borderColor: "rgb(0, 0, 0, 1)", borderRadius: 5, borderThickness: 2, fontSize: 12,
+            height: 30, left: 0, text: 'Input', textColor: "rgb(128, 128, 128 1)", top: 0, type: "textfield", width: 160
         });
     }
 
@@ -427,7 +427,10 @@ class EditScreen extends Component {
                                         {this.state.displayFontPicker ? <div style={popover}>
                                             <div style={cover} onClick={() => this.setState({ displayFontPicker: false })} />
                                             <ChromePicker color={focus.textColor}
-                                                onChangeComplete={(color, e) => this.modifyControl('textColor', color.hex)}
+                                                onChangeComplete={(color, e) => {
+                                                    let newColor = "rgb(" + color.rgb.r + ", " + color.rgb.g + ", " + color.rgb.b + ", " + color.rgb.a + ")";
+                                                    this.modifyControl('textColor', newColor);
+                                                }}
                                             />
                                         </div> : null} <span className="col s1"></span>
                                     </div>
@@ -439,7 +442,10 @@ class EditScreen extends Component {
                                     {this.state.displayBackgroundPicker ? <div style={popover}>
                                         <div style={cover} onClick={() => this.setState({ displayBackgroundPicker: false })} />
                                         <ChromePicker color={focus.backgroundColor}
-                                            onChangeComplete={(color, e) => this.modifyControl('backgroundColor', color.hex)}
+                                            onChangeComplete={(color, e) => {
+                                                let newColor = "rgb(" + color.rgb.r + ", " + color.rgb.g + ", " + color.rgb.b + ", " + color.rgb.a + ")";
+                                                this.modifyControl('backgroundColor', newColor);
+                                            }}
                                         />
                                     </div> : null} <span className="col s1"></span>
                                 </div>
@@ -450,7 +456,10 @@ class EditScreen extends Component {
                                     {this.state.displayBorderPicker ? <div style={popover}>
                                         <div style={cover} onClick={() => this.setState({ displayBorderPicker: false })} />
                                         <ChromePicker color={focus.borderColor}
-                                            onChangeComplete={(color, e) => this.modifyControl('borderColor', color.hex)}
+                                            onChangeComplete={(color, e) => {
+                                                let newColor = "rgb(" + color.rgb.r + ", " + color.rgb.g + ", " + color.rgb.b + ", " + color.rgb.a + ")";
+                                                this.modifyControl('borderColor', newColor);
+                                            }}
                                         />
                                     </div> : null} <span className="col s1"></span>
                                 </div>
