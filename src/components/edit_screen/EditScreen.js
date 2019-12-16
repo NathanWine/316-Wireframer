@@ -34,7 +34,8 @@ class EditScreen extends Component {
             this.setState({
                 height: this.newHeight,
                 width: this.newWidth,
-                savable: true
+                savable: true,
+                dimensionsChangable: false,
             })
         }
         else
@@ -113,12 +114,60 @@ class EditScreen extends Component {
                 time: Date.now()
             })
         }
+
+        window.addEventListener("keydown", this.handleKeyDown);
+    }
+
+    componentWillUnmount = () => {
+        window.removeEventListener("keydown", this.handleKeyDown);
+    }
+
+    handleKeyDown = (e) => {
+        if (e.ctrlKey) {
+            if (e.keyCode === 68) {
+                e.preventDefault();
+                this.duplicateControl();
+            }
+        }
+        else if (e.keyCode === 46) {
+            this.deleteControl();
+        }
+    }
+
+    duplicateControl = () => {
+        console.log("DUPLICATING CONTROL")
+        if (this.state.focus) {
+            console.log("Duplicating:", this.state.focus);
+            let control = JSON.parse(JSON.stringify(this.state.focus));
+            control.left += 100;
+            control.top += 100;
+            this.addControl(control);
+        }
+    }
+
+    deleteControl = () => {
+        console.log("DELETING CONTROL");
+        if (this.state.focus) {
+            console.log("Deleting:", this.state.focus);
+            let controls = this.state.controls;
+            controls.splice(controls.indexOf(this.state.focus), 1);
+            console.log(controls);
+            this.setState({
+                controls: controls,
+                focus: null,
+                savable: true,
+            });
+        }
     }
 
     addControl = (control) => {
         let controls = this.state.controls;
         controls.push(control);
-        this.setState({ controls: controls });
+        this.setState({
+            controls: controls,
+            focus: control,
+            savable: true,
+        });
     }
 
     addContainer = () => {
@@ -237,14 +286,14 @@ class EditScreen extends Component {
                     <div className="col s2 z-depth-2 no_padding center-align"
                         style={{ borderRadius: '0 0 0 10px', backgroundImage: 'linear-gradient(to bottom, #955a90, #7f5a95)' }}>
                         <div className="center-align" style={{ borderWidth: '2px', borderStyle: 'solid', borderRadius: '0 0 5px 5px' }}>
-                            <Button><Icon>zoom_in</Icon></Button>
-                            <Button><Icon>zoom_out</Icon></Button>
-                            <Button className={this.state.savable ? "" : "disabled"} onClick={this.saveWireframe}
+                            <Button className="green accent-3"><Icon>zoom_in</Icon></Button>
+                            <Button className="green accent-3"><Icon>zoom_out</Icon></Button>
+                            <Button className={this.state.savable ? "amber accent-3" : "disabled"} onClick={this.saveWireframe}
                                 tooltip="Save wireframe" tooltipOptions={{ position: 'top' }}><Icon>save</Icon></Button>
                             {this.state.savable ? <Button tooltip="Go back" tooltipOptions={{ position: 'top' }}
                                 className="pink accent-2 modal-trigger" href="#save_modal"><Icon>keyboard_return</Icon></Button>
                                 : <Button tooltip="Go back" tooltipOptions={{ position: 'top' }}
-                                className="pink accent-2" onClick={() => this.goBack(false)}><Icon>keyboard_return</Icon></Button>}
+                                    className="pink accent-2" onClick={() => this.goBack(false)}><Icon>keyboard_return</Icon></Button>}
                         </div>
                         <div className="row" style={{ marginBottom: '0px', marginTop: '10px' }}>
                             <div className="input-field col s10 offset-s1">
@@ -262,7 +311,7 @@ class EditScreen extends Component {
                                 <label className="active" htmlFor="height">Height</label>
                             </div>
                             <div className="col s4">
-                                <Button className={this.state.dimensionsChangable ? "" : "disabled"}
+                                <Button className={this.state.dimensionsChangable ? "amber accent-3" : "disabled"}
                                     onClick={this.updateDimensions} tooltip="Update dimensions" tooltipOptions={{ position: 'top' }}>
                                     <Icon>update</Icon>
                                 </Button>
@@ -365,7 +414,7 @@ class EditScreen extends Component {
                                     </div>
                                     : null}
                                 {focus.textColor ?
-                                    <div className="row valign-wrapper" style={{paddingBottom: '10px'}}>
+                                    <div className="row valign-wrapper" style={{ paddingBottom: '10px' }}>
                                         <b className="col s9">Font Color:</b> {focus.fontColor}
                                         <Button className="col s2" style={{ backgroundColor: focus.textColor, borderRadius: '15px' }}
                                             onClick={() => this.setState({ displayFontPicker: !this.state.displayFontPicker })}></Button>
@@ -377,7 +426,7 @@ class EditScreen extends Component {
                                         </div> : null} <span className="col s1"></span>
                                     </div>
                                     : null}
-                                <div className="row valign-wrapper" style={{paddingBottom: '10px'}}>
+                                <div className="row valign-wrapper" style={{ paddingBottom: '10px' }}>
                                     <b className="col s9">Background:</b>
                                     <Button className="col s2" style={{ backgroundColor: focus.backgroundColor, borderRadius: '15px' }}
                                         onClick={() => this.setState({ displayBackgroundPicker: !this.state.displayBackgroundPicker })}></Button>
@@ -399,7 +448,7 @@ class EditScreen extends Component {
                                         />
                                     </div> : null} <span className="col s1"></span>
                                 </div>
-                                <div className="row valign-wrapper" style={{marginBottom: '0'}}>
+                                <div className="row valign-wrapper" style={{ marginBottom: '0' }}>
                                     <b className="col s8">Border Thickness:</b>
                                     <div className="input-field col s4">
                                         <input defaultValue={focus.borderThickness} id="borderThickness" type="number"
@@ -421,7 +470,13 @@ class EditScreen extends Component {
                                             }} />
                                     </div>
                                 </div>
-                                <Button className="pink black-text accent-2" onClick={this.removeFocus}>Deselect control</Button>
+                                <div className="row">
+                                    <Button className="amber black-text accent-2 col s10 offset-s1" onClick={this.removeFocus}>Deselect control</Button>
+                                    <Button className="green black-text accent-2 col s10 offset-s1" onClick={this.duplicateControl}
+                                        style={{ marginTop: '10px' }} >Duplicate control</Button>
+                                    <Button className="pink black-text accent-2 col s10 offset-s1" onClick={this.deleteControl}
+                                        style={{ marginTop: '10px' }} >Delete control</Button>
+                                </div>
                             </div>
                             : null}
                     </div>
@@ -429,7 +484,7 @@ class EditScreen extends Component {
                         <div className="grey lighten-2">
                             <Button className="red accent-2" onClick={() => this.goBack(true)} modal="close">Yes</Button><span>  </span>
                             <Button className="purple lighten-2" onClick={() => this.goBack(false)}>No</Button><span>  </span>
-                            <Button modal="close">Cancel</Button>
+                            <Button modal="green accent-2 close">Cancel</Button>
                         </div>}>
                         <p><b>Would you like to save changes before returning to the home screen?</b></p>
                     </Modal>
