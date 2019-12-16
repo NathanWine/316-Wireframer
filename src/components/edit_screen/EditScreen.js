@@ -21,6 +21,7 @@ class EditScreen extends Component {
         displayFontPicker: false,
         displayBackgroundPicker: false,
         displayBorderPicker: false,
+        zoom: 1,
     }
 
     newHeight = this.props.wireframe.height;
@@ -272,6 +273,7 @@ class EditScreen extends Component {
         let wireframe = this.props.wireframe;
         let focus = this.state.focus;
         let controls = this.state.controls;
+        let scale = "scale(" + this.state.zoom + ")";
         console.log("Controls:", controls);
 
         if (!auth.uid)
@@ -286,8 +288,8 @@ class EditScreen extends Component {
                     <div className="col s2 z-depth-2 no_padding center-align"
                         style={{ borderRadius: '0 0 0 10px', backgroundImage: 'linear-gradient(to bottom, #955a90, #7f5a95)' }}>
                         <div className="center-align" style={{ borderWidth: '2px', borderStyle: 'solid', borderRadius: '0 0 5px 5px' }}>
-                            <Button className="green accent-3"><Icon>zoom_in</Icon></Button>
-                            <Button className="green accent-3"><Icon>zoom_out</Icon></Button>
+                            <Button className="green accent-3" onClick={() => this.setState({ zoom: this.state.zoom * 2 })}><Icon>zoom_in</Icon></Button>
+                            <Button className="green accent-3" onClick={() => this.setState({ zoom: this.state.zoom / 2 })}><Icon>zoom_out</Icon></Button>
                             <Button className={this.state.savable ? "amber accent-3" : "disabled"} onClick={this.saveWireframe}
                                 tooltip="Save wireframe" tooltipOptions={{ position: 'top' }}><Icon>save</Icon></Button>
                             {this.state.savable ? <Button tooltip="Go back" tooltipOptions={{ position: 'top' }}
@@ -295,11 +297,15 @@ class EditScreen extends Component {
                                 : <Button tooltip="Go back" tooltipOptions={{ position: 'top' }}
                                     className="pink accent-2" onClick={() => this.goBack(false)}><Icon>keyboard_return</Icon></Button>}
                         </div>
-                        <div className="row" style={{ marginBottom: '0px', marginTop: '10px' }}>
-                            <div className="input-field col s10 offset-s1">
+                        <div className="row valign_wrapper" style={{ marginBottom: '0px', marginTop: '10px' }}>
+                            <div className="input-field col s8 offset-s1">
                                 <input defaultValue={wireframe.name} id="name" type="text" onChange={this.changeName} />
                                 <label className="active" htmlFor="name">Name</label>
                             </div>
+                            <div className="col s2" style={{
+                                padding: '0', marginLeft: '-5px', minWidth: 'max-content',
+                                backgroundColor: '#00e676', border: '1px solid black', borderRadius: '4px'
+                            }}>x{this.state.zoom}</div>
                         </div>
                         <div className="valign-wrapper">
                             <div className="input-field col s4">
@@ -346,10 +352,10 @@ class EditScreen extends Component {
                     </div>
                     <div onMouseDown={this.removeFocus} className="col s8 center-align no_padding"
                         style={{ position: 'relative', overflow: 'auto', height: 'inherit', backgroundImage: 'linear-gradient(to bottom, #808080, #484848)' }}>
-                        <div className="grey lighten-3" style={{ height: this.state.height, width: this.state.width, textAlign: 'left' }}>
+                        <div className="grey lighten-3" style={{ height: this.state.height, width: this.state.width, textAlign: 'left', transform: scale, transformOrigin: '0 0' }}>
                             {controls && controls.map(control => (
                                 focus === control ?
-                                    <Rnd key={i++} bounds='parent'
+                                    <Rnd key={i++} bounds='parent' scale={this.state.zoom}
                                         resizeHandleClasses={{
                                             bottomLeft: "handle",
                                             bottomRight: "handle",
@@ -401,7 +407,7 @@ class EditScreen extends Component {
                                     </div>
                                     : null}
                                 {focus.fontSize ?
-                                    <div className="row valign-wrapper">
+                                    <div className="row valign-wrapper" style={{ marginBottom: '0px' }}>
                                         <b className="col s8">Font Size:</b>
                                         <div className="input-field col s4">
                                             <input defaultValue={focus.fontSize} id="fontSize" type="number"
@@ -484,7 +490,7 @@ class EditScreen extends Component {
                         <div className="grey lighten-2">
                             <Button className="red accent-2" onClick={() => this.goBack(true)} modal="close">Yes</Button><span>  </span>
                             <Button className="purple lighten-2" onClick={() => this.goBack(false)}>No</Button><span>  </span>
-                            <Button modal="green accent-2 close">Cancel</Button>
+                            <Button className="green accent-2" modal="close">Cancel</Button>
                         </div>}>
                         <p><b>Would you like to save changes before returning to the home screen?</b></p>
                     </Modal>
