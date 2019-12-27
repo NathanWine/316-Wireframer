@@ -6,27 +6,29 @@ import { firestoreConnect } from 'react-redux-firebase';
 import { Rnd } from 'react-rnd'
 import { getFirestore } from 'redux-firestore';
 import { Button, Icon, Modal } from 'react-materialize';
-import { ChromePicker } from 'react-color'
+import PropertyBar from './ControlPropertyBar';
+import WindowPropertyBar from './WindowPropertyBar';
 
 class EditScreen extends Component {
 
     state = {
-        height: this.props.wireframe.height,
-        width: this.props.wireframe.width,
         focus: null,
-        controls: this.props.wireframe.controls,
         savable: false,
         dimensionsChangable: false,
-        name: this.props.wireframe.name,
-        displayFontPicker: false,
-        displayBackgroundPicker: false,
-        displayBorderPicker: false,
         zoom: 1,
     }
 
-    newHeight = this.props.wireframe.height;
-    newWidth = this.props.wireframe.width;
-    newName = this.props.wireframe.name;
+    UNSAFE_componentWillReceiveProps = (newProps) => {
+        this.setState({
+            height: newProps.wireframe.height,
+            width: newProps.wireframe.width,
+            controls: newProps.wireframe.controls,
+            name: newProps.wireframe.name
+        });
+        this.newHeight = newProps.wireframe.height;
+        this.newWidth = newProps.wireframe.width;
+        this.newName = newProps.wireframe.name;
+    }
 
     updateDimensions = () => {
         console.log(this.newHeight, this.newWidth);
@@ -40,7 +42,7 @@ class EditScreen extends Component {
             })
         }
         else
-            alert("Dimensions must be numbers between 1 and 5000");
+            alert("Dimension values must be numbers between 1 and 5,000");
     }
 
     changeWidth = (e) => {
@@ -171,37 +173,37 @@ class EditScreen extends Component {
         });
     }
 
-    addContainer = () => {
-        console.log("Adding a container");
-        this.addControl({
-            backgroundColor: 'rgb(255, 255, 255, 1)', borderColor: "rgb(0, 0, 0, 1)", borderRadius: 5, borderThickness: 2,
-            height: 60, left: 0, top: 0, type: "container", width: 125
-        })
-    }
+    // addContainer = () => {
+    //     console.log("Adding a container");
+    //     this.addControl({
+    //         backgroundColor: 'rgb(255, 255, 255, 1)', borderColor: "rgb(0, 0, 0, 1)", borderRadius: 5, borderThickness: 2,
+    //         height: 60, left: 0, top: 0, type: "container", width: 125
+    //     })
+    // }
 
-    addLabel = () => {
-        console.log("Adding a label");
-        this.addControl({
-            backgroundColor: 'rgb(255, 255, 255, 0)', borderColor: "rgb(0, 0, 0, 0)", borderRadius: 5, borderThickness: 0, fontSize: 12,
-            height: 30, left: 0, text: 'Prompt for Input', textColor: "rgb(0, 0, 0, 1)", top: 0, type: "label", width: 130
-        });
-    }
+    // addLabel = () => {
+    //     console.log("Adding a label");
+    //     this.addControl({
+    //         backgroundColor: 'rgb(255, 255, 255, 0)', borderColor: "rgb(0, 0, 0, 0)", borderRadius: 5, borderThickness: 0, fontSize: 12,
+    //         height: 30, left: 0, text: 'Prompt for Input', textColor: "rgb(0, 0, 0, 1)", top: 0, type: "label", width: 130
+    //     });
+    // }
 
-    addButton = () => {
-        console.log("Adding a button");
-        this.addControl({
-            backgroundColor: 'rgb(211, 211, 211, 1)', borderColor: "rgb(0, 0, 0, 1)", borderRadius: 5, borderThickness: 2, fontSize: 12,
-            height: 35, left: 0, text: 'Submit', textColor: "rgb(0, 0, 0, 1)", top: 0, type: "button", width: 130
-        })
-    }
+    // addButton = () => {
+    //     console.log("Adding a button");
+    //     this.addControl({
+    //         backgroundColor: 'rgb(211, 211, 211, 1)', borderColor: "rgb(0, 0, 0, 1)", borderRadius: 5, borderThickness: 2, fontSize: 12,
+    //         height: 35, left: 0, text: 'Submit', textColor: "rgb(0, 0, 0, 1)", top: 0, type: "button", width: 130
+    //     })
+    // }
 
-    addTextfield = () => {
-        console.log("Adding a textfield");
-        this.addControl({
-            backgroundColor: 'rgb(255, 255, 255, 1)', borderColor: "rgb(0, 0, 0, 1)", borderRadius: 5, borderThickness: 2, fontSize: 12,
-            height: 30, left: 0, text: 'Input', textColor: "rgb(128, 128, 128 1)", top: 0, type: "textfield", width: 160
-        });
-    }
+    // addTextfield = () => {
+    //     console.log("Adding a textfield");
+    //     this.addControl({
+    //         backgroundColor: 'rgb(255, 255, 255, 1)', borderColor: "rgb(0, 0, 0, 1)", borderRadius: 5, borderThickness: 2, fontSize: 12,
+    //         height: 30, left: 0, text: 'Input', textColor: "rgb(128, 128, 128 1)", top: 0, type: "textfield", width: 160
+    //     });
+    // }
 
     modifyControl = (property, value) => {
         console.log("Changing", property, "to", value);
@@ -286,7 +288,12 @@ class EditScreen extends Component {
         return (
             <div style={{ height: '755px', borderRadius: '0 0 10px 10px' }}>
                 <div className="row flex" style={{ height: 'inherit' }}>
-                    <div className="col s2 z-depth-2 no_padding center-align"
+                    <WindowPropertyBar addControl={this.addControl} zoomIn={() => this.setState({ zoom: this.state.zoom * 2})} 
+                    zoomOut={() => this.setState({zoom: this.state.zoom / 2})} savable={this.state.savable}
+                    dimensionsChangable={this.state.dimensionsChangable} saveWireframe={this.saveWireframe}
+                    goBack={this.goBack} changeName={this.changeName} zoom={this.state.zoom} changeWidth={this.changeWidth}
+                    changeHeight={this.changeHeight} updateDimensions={this.updateDimensions} wireframe={wireframe}/>
+                    {/* <div className="col s2 z-depth-2 no_padding center-align"
                         style={{ borderRadius: '0 0 0 10px', backgroundImage: 'linear-gradient(to bottom, #955a90, #7f5a95)' }}>
                         <div className="center-align" style={{ borderWidth: '2px', borderStyle: 'solid', borderRadius: '0 0 5px 5px' }}>
                             <Button className="green accent-3" onClick={() => this.setState({ zoom: this.state.zoom * 2 })}><Icon>zoom_in</Icon></Button>
@@ -350,7 +357,7 @@ class EditScreen extends Component {
                             }}>Input</div>
                             <p><b>Textfield</b></p>
                         </div>
-                    </div>
+                    </div> */}
                     <div onMouseDown={this.removeFocus} className="col s8 center-align no_padding"
                         style={{ position: 'relative', overflow: 'auto', height: 'inherit', backgroundImage: 'linear-gradient(to bottom, #808080, #484848)' }}>
                         <div className="grey lighten-3" style={{ height: this.state.height, width: this.state.width, textAlign: 'left', transform: scale, transformOrigin: '0 0' }}>
@@ -393,109 +400,7 @@ class EditScreen extends Component {
                             ))}
                         </div>
                     </div>
-                    <div className="col s2 z-depth-2"
-                        style={{ borderRadius: '0 0 10px 0', backgroundImage: 'linear-gradient(to bottom, #955a90, #7f5a95)' }}>
-                        {focus ?
-                            <div>
-                                <div style={{ paddingBottom: '20px', fontSize: '17px' }}><b>Properties</b></div>
-                                {focus.text !== undefined ?
-                                    <div className="row" style={{ marginBottom: '0px' }}>
-                                        <div className="input-field col s10 offset-s1">
-                                            <input defaultValue={focus.text} id="text" type="text"
-                                                onChange={(e) => this.modifyControl("text", e.target.value)} />
-                                            <label className="active" htmlFor="text">Text</label>
-                                        </div>
-                                    </div>
-                                    : null}
-                                {focus.fontSize ?
-                                    <div className="row valign-wrapper" style={{ marginBottom: '0px' }}>
-                                        <b className="col s8">Font Size:</b>
-                                        <div className="input-field col s4">
-                                            <input defaultValue={focus.fontSize} id="fontSize" type="number"
-                                                onChange={(e) => {
-                                                    if (e.target.value && !isNaN(e.target.value)) {
-                                                        this.modifyControl("fontSize", parseInt(e.target.value));
-                                                    }
-                                                }} />
-                                        </div>
-                                    </div>
-                                    : null}
-                                {focus.textColor ?
-                                    <div className="row valign-wrapper" style={{ paddingBottom: '10px' }}>
-                                        <b className="col s9">Font Color:</b> {focus.fontColor}
-                                        <Button className="col s2" style={{ backgroundColor: focus.textColor, borderRadius: '15px' }}
-                                            onClick={() => this.setState({ displayFontPicker: !this.state.displayFontPicker })}></Button>
-                                        {this.state.displayFontPicker ? <div style={popover}>
-                                            <div style={cover} onClick={() => this.setState({ displayFontPicker: false })} />
-                                            <ChromePicker color={focus.textColor}
-                                                onChangeComplete={(color, e) => {
-                                                    let newColor = "rgb(" + color.rgb.r + ", " + color.rgb.g + ", " + color.rgb.b + ", " + color.rgb.a + ")";
-                                                    this.modifyControl('textColor', newColor);
-                                                }}
-                                            />
-                                        </div> : null} <span className="col s1"></span>
-                                    </div>
-                                    : null}
-                                <div className="row valign-wrapper" style={{ paddingBottom: '10px' }}>
-                                    <b className="col s9">Background:</b>
-                                    <Button className="col s2" style={{ backgroundColor: focus.backgroundColor, borderRadius: '15px' }}
-                                        onClick={() => this.setState({ displayBackgroundPicker: !this.state.displayBackgroundPicker })}></Button>
-                                    {this.state.displayBackgroundPicker ? <div style={popover}>
-                                        <div style={cover} onClick={() => this.setState({ displayBackgroundPicker: false })} />
-                                        <ChromePicker color={focus.backgroundColor}
-                                            onChangeComplete={(color, e) => {
-                                                let newColor = "rgb(" + color.rgb.r + ", " + color.rgb.g + ", " + color.rgb.b + ", " + color.rgb.a + ")";
-                                                this.modifyControl('backgroundColor', newColor);
-                                            }}
-                                        />
-                                    </div> : null} <span className="col s1"></span>
-                                </div>
-                                <div className="row valign-wrapper">
-                                    <b className="col s9">Border Color:</b>
-                                    <Button className="col s2" style={{ backgroundColor: focus.borderColor, borderRadius: '15px' }}
-                                        onClick={() => this.setState({ displayBorderPicker: !this.state.displayBorderPicker })}></Button>
-                                    {this.state.displayBorderPicker ? <div style={popover}>
-                                        <div style={cover} onClick={() => this.setState({ displayBorderPicker: false })} />
-                                        <ChromePicker color={focus.borderColor}
-                                            onChangeComplete={(color, e) => {
-                                                let newColor = "rgb(" + color.rgb.r + ", " + color.rgb.g + ", " + color.rgb.b + ", " + color.rgb.a + ")";
-                                                this.modifyControl('borderColor', newColor);
-                                            }}
-                                        />
-                                    </div> : null} <span className="col s1"></span>
-                                </div>
-                                <div className="row valign-wrapper" style={{ marginBottom: '0' }}>
-                                    <b className="col s8">Border Thickness:</b>
-                                    <div className="input-field col s4">
-                                        <input defaultValue={focus.borderThickness} id="borderThickness" type="number"
-                                            onChange={(e) => {
-                                                if (e.target.value && !isNaN(e.target.value)) {
-                                                    this.modifyControl("borderThickness", parseInt(e.target.value));
-                                                }
-                                            }} />
-                                    </div>
-                                </div>
-                                <div className="row valign-wrapper">
-                                    <b className="col s8">Border Radius:</b>
-                                    <div className="input-field col s4">
-                                        <input defaultValue={focus.borderRadius} id="borderRadius" type="number"
-                                            onChange={(e) => {
-                                                if (e.target.value && !isNaN(e.target.value)) {
-                                                    this.modifyControl("borderRadius", parseInt(e.target.value));
-                                                }
-                                            }} />
-                                    </div>
-                                </div>
-                                <div className="row">
-                                    <Button className="amber black-text accent-2 col s10 offset-s1" onClick={this.removeFocus}>Deselect control</Button>
-                                    <Button className="green black-text accent-2 col s10 offset-s1" onClick={this.duplicateControl}
-                                        style={{ marginTop: '10px' }} >Duplicate control</Button>
-                                    <Button className="pink black-text accent-2 col s10 offset-s1" onClick={this.deleteControl}
-                                        style={{ marginTop: '10px' }} >Delete control</Button>
-                                </div>
-                            </div>
-                            : null}
-                    </div>
+                    <PropertyBar modifyControl={this.modifyControl} focus={focus} />
                     <Modal id="save_modal" header="Save Wireframe?" actions={
                         <div className="grey lighten-2">
                             <Button className="red accent-2" onClick={() => this.goBack(true)} modal="close">Yes</Button><span>  </span>
@@ -522,18 +427,6 @@ const mapStateToProps = (state, ownProps) => {
         auth: state.firebase.auth,
     };
 };
-
-const popover = {
-    position: 'absolute',
-    zIndex: '1000',
-}
-const cover = {
-    position: 'fixed',
-    top: '0px',
-    right: '0px',
-    bottom: '0px',
-    left: '0px',
-}
 
 export default compose(
     connect(mapStateToProps),
