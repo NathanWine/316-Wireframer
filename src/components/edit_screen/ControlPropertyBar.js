@@ -113,12 +113,12 @@ class PropertyBar extends Component {
                                 style={{ marginTop: '10px' }} >Delete control</Button>
                         </div>
                     </div>
-                    : <div><p style={{paddingTop: '10px'}}><b>Add</b> controls to the edit window by selecting them from the left toolbar.</p>
-                        <p style={{paddingTop: '10px'}}><b>Select</b> a control in the edit window by clicking it.</p>
-                        <p style={{paddingTop: '10px'}}>You can freely <b>drag</b>, <b>resize</b>, and
-                        <b>alter</b> properties of a selected control from this toolbar.</p>
-                        <p style={{paddingTop: '10px'}}>Try <b>modifying</b> the edit window properties from the left toolbar!</p>
-                        <p style={{paddingTop: '10px'}}>Be sure to <b>save</b> any changes you want to keep.</p></div>}
+                    : <div><p style={{ paddingTop: '10px' }}><b>Add</b> controls to the edit window by selecting them from the left toolbar.</p>
+                        <p style={{ paddingTop: '10px' }}><b>Select</b> a control in the edit window by clicking it.</p>
+                        <p style={{ paddingTop: '10px' }}>You can freely <b>drag</b>, <b>resize</b>, and
+                        <b> alter</b> properties of a selected control from this toolbar.</p>
+                        <p style={{ paddingTop: '10px' }}>Try <b>modifying</b> the edit window properties from the left toolbar!</p>
+                        <p style={{ paddingTop: '10px' }}>Be sure to <b>save</b> any changes you want to keep.</p></div>}
             </div>
         );
     }

@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Button, Icon, Modal } from 'react-materialize';
+import { Button, Icon } from 'react-materialize';
 
 class WindowPropertyBar extends Component {
     addContainer = () => {

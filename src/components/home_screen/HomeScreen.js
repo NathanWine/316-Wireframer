@@ -5,6 +5,7 @@ import { Redirect } from 'react-router-dom';
 import { firestoreConnect } from 'react-redux-firebase';
 import WireframeLinks from './WireframeLinks'
 import { getFirestore } from 'redux-firestore';
+import { Button, Icon } from 'react-materialize';
 
 class HomeScreen extends Component {
     deleteWireframe = (id) => {
@@ -62,9 +63,8 @@ class HomeScreen extends Component {
                                 Wireframer
                             </div>
                             <div style={{ paddingTop: '15px' }} className="home_new_list_container center-align">
-                                <a onClick={this.createNewWireframe} className="waves-effect waves-light btn-large red accent-2 hoverable rounded">
-                                    <i className="material-icons right">library_add</i>Create a New Wireframe
-                            </a>
+                                <Button onClick={this.createNewWireframe} className="red accent-2 hoverable rounded">
+                                    <Icon className="right">library_add</Icon>Create a New Wireframe</Button>
                             </div>
                         </div>
                     </div>
