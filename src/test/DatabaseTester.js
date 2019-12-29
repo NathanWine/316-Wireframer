@@ -2,21 +2,8 @@ import React from 'react'
 import { connect } from 'react-redux';
 import todoJson from './testWireframeData.json'
 import { getFirestore } from 'redux-firestore';
-import { ChromePicker } from 'react-color'
 
 class DatabaseTester extends React.Component {
-    state = {
-        displayColorPicker: false,
-    };
-
-    handleClick = () => {
-        this.setState({ displayColorPicker: !this.state.displayColorPicker })
-    };
-
-    handleClose = () => {
-        this.setState({ displayColorPicker: false })
-    };
-
     // NOTE, BY KEEPING THE DATABASE PUBLIC YOU CAN
     // DO THIS ANY TIME YOU LIKE WITHOUT HAVING
     // TO LOG IN
@@ -68,27 +55,10 @@ class DatabaseTester extends React.Component {
 
         return (
             <div className="blue">
-                <button onClick={this.handleClick}>Pick Color</button>
-                {this.state.displayColorPicker ? <div style={popover}>
-                    <div style={cover} onClick={this.handleClose} />
-                    <ChromePicker />
-                </div> : null}
                 <button onClick={this.handleClear}>Clear Database</button>
                 <button onClick={this.handleReset}>Reset Database</button>
             </div>)
     }
-}
-
-const popover = {
-    position: 'absolute',
-    zIndex: '2',
-}
-const cover = {
-    position: 'fixed',
-    top: '0px',
-    right: '0px',
-    bottom: '0px',
-    left: '0px',
 }
 
 const mapStateToProps = function (state) {

@@ -6,7 +6,7 @@ import { firestoreConnect } from 'react-redux-firebase';
 import { Rnd } from 'react-rnd'
 import { getFirestore } from 'redux-firestore';
 import { Button, Modal } from 'react-materialize';
-import PropertyBar from './ControlPropertyBar';
+import ControlPropertyBar from './ControlPropertyBar';
 import WindowPropertyBar from './WindowPropertyBar';
 
 class EditScreen extends Component {
@@ -188,14 +188,12 @@ class EditScreen extends Component {
 
     focusChange = (e, control) => {
         e.stopPropagation();
-        console.log("CHANGING FOCUS", control)
         this.setState({
             focus: control
         });
     }
 
     removeFocus = () => {
-        console.log("REMOVING FOCUS")
         this.setState({
             focus: null
         })
@@ -244,7 +242,7 @@ class EditScreen extends Component {
         let controls = this.state.controls;
         let scale = "scale(" + this.state.zoom + ")";
         console.log("Controls:", controls);
-        console.log("Focus", focus, this.state.focus);
+        console.log("Focus", focus);
 
         if (!auth.uid)
             return <Redirect to="/" />;
@@ -289,7 +287,9 @@ class EditScreen extends Component {
                                                 display: 'inline-block', position: 'absolute', overflow: 'hidden', width: '100%',
                                                 height: '100%', fontSize: control.fontSize, color: control.textColor,
                                                 backgroundColor: control.backgroundColor, borderColor: control.borderColor,
-                                                borderWidth: control.borderThickness, borderRadius: control.borderRadius, borderStyle: 'solid'
+                                                borderWidth: control.borderThickness, borderRadius: control.borderRadius, borderStyle: 'solid',
+                                                textAlign: control.textAlign, textDecoration: control.textDecoration,
+                                                fontWeight: control.fontWeight, fontStyle: control.fontStyle
                                             }}>{control.text}</div>
                                     </Rnd>
                                     : <div key={i++} onMouseDown={(e) => { this.focusChange(e, control) }} className="moveable"
@@ -297,12 +297,24 @@ class EditScreen extends Component {
                                             display: 'inline-block', position: 'absolute', overflow: 'hidden', top: control.top,
                                             left: control.left, width: control.width, height: control.height, fontSize: control.fontSize,
                                             color: control.textColor, backgroundColor: control.backgroundColor, borderColor: control.borderColor,
-                                            borderWidth: control.borderThickness, borderRadius: control.borderRadius, borderStyle: 'solid'
+                                            borderWidth: control.borderThickness, borderRadius: control.borderRadius, borderStyle: 'solid',
+                                            textAlign: control.textAlign, textDecoration: control.textDecoration,
+                                            fontWeight: control.fontWeight, fontStyle: control.fontStyle
                                         }}>{control.text}</div>
                             ))}
                         </div>
                     </div>
-                    <PropertyBar modifyControl={this.modifyControl} focus={focus} />
+                    {focus ? <ControlPropertyBar modifyControl={this.modifyControl} focus={focus} /> :
+                        <div className="col s2 z-depth-2 control_property_bar"
+                            style={{
+                                borderRadius: '0 0 10px 0', backgroundImage: 'linear-gradient(to bottom, #955a90, #7f5a95)',
+                                height: '755px', overflow: 'auto' }}>
+                            <p style={{ paddingTop: '10px' }}><b>Add</b> controls to the edit window by selecting them from the left toolbar.</p>
+                            <p style={{ paddingTop: '10px' }}><b>Select</b> a control in the edit window by clicking it.</p>
+                            <p style={{ paddingTop: '10px' }}>You can freely <b>drag</b>, <b>resize</b>, and
+                            <b> alter</b> properties of a selected control from this toolbar.</p>
+                            <p style={{ paddingTop: '10px' }}>Try <b>modifying</b> the edit window properties from the left toolbar!</p>
+                            <p style={{ paddingTop: '10px' }}>Be sure to <b>save</b> any changes you want to keep.</p></div>}
                     <Modal id="save_modal" header="Save Wireframe?" actions={
                         <div className="grey lighten-2">
                             <Button className="red accent-2" onClick={() => this.goBack(true)} modal="close">Yes</Button><span>  </span>

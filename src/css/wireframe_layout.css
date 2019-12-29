@@ -70,4 +70,15 @@ html {
     width:12px !important;
     height:12px !important;
     border: 2px solid black;
+    background-color: white;
   }
+
+  .control_property_bar {
+    overflow-y: scroll;
+    scrollbar-width: none; /* Firefox */
+    -ms-overflow-style: none;  /* Internet Explorer 10+ */
+}
+  .control_property_bar::-webkit-scrollbar { /* WebKit */
+    width: 0;
+    height: 0;
+}

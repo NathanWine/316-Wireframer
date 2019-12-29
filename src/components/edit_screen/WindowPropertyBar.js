@@ -35,7 +35,6 @@ class WindowPropertyBar extends Component {
     }
 
     render() {
-        console.log("WINDOWPROPERTYBAR")
         let wireframe = this.props.wireframe;
         console.log(wireframe);
         return (
