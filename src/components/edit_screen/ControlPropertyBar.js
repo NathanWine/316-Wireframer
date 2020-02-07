@@ -10,15 +10,11 @@ class ControlPropertyBar extends Component {
     }
 
     render() {
-        console.log("CONTROL PROPERTY BAR");
-        console.log("FOCUS", this.props.focus);
         let focus = this.props.focus;
         this.bold = focus.fontWeight === "bold" ? true : false;
         this.italic = focus.fontStyle === "italic" ? true : false;
         this.underline = focus.textDecoration === "underline" ? true : false;
-        console.log("BOLD?", this.bold);
-        console.log("ITALIC", this.italic);
-        console.log("UNDERLINE", this.underline);
+        // TODO: Change the stlying of the checkboxes so they are at least vertically aligned
 
         return (
             <div className="col s2 z-depth-2 control_property_bar"
@@ -143,10 +139,10 @@ class ControlPropertyBar extends Component {
                     </div>
                 </div>
                 <div className="row">
-                    <Button className="amber black-text accent-2 col s10 offset-s1" onClick={this.removeFocus}>Deselect control</Button>
-                    <Button className="green black-text accent-2 col s10 offset-s1" onClick={this.duplicateControl}
+                    <Button className="amber black-text accent-2 col s10 offset-s1" onClick={this.props.removeFocus}>Deselect control</Button>
+                    <Button className="green black-text accent-2 col s10 offset-s1" onClick={this.props.duplicateControl}
                         style={{ marginTop: '10px' }} >Duplicate control</Button>
-                    <Button className="pink black-text accent-2 col s10 offset-s1" onClick={this.deleteControl}
+                    <Button className="pink black-text accent-2 col s10 offset-s1" onClick={this.props.deleteControl}
                         style={{ marginTop: '10px' }} >Delete control</Button>
                 </div>
             </div>

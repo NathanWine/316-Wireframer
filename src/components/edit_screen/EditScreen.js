@@ -3,7 +3,7 @@ import { Redirect } from 'react-router-dom'
 import { connect } from 'react-redux';
 import { compose } from 'redux';
 import { firestoreConnect } from 'react-redux-firebase';
-import { Rnd } from 'react-rnd'
+import { Rnd } from 'react-rnd';
 import { getFirestore } from 'redux-firestore';
 import { Button, Modal } from 'react-materialize';
 import ControlPropertyBar from './ControlPropertyBar';
@@ -304,11 +304,13 @@ class EditScreen extends Component {
                             ))}
                         </div>
                     </div>
-                    {focus ? <ControlPropertyBar modifyControl={this.modifyControl} focus={focus} /> :
+                    {focus ? <ControlPropertyBar modifyControl={this.modifyControl} removeFocus={this.removeFocus}
+                        duplicateControl={this.duplicateControl} deleteControl={this.deleteControl} focus={focus} /> :
                         <div className="col s2 z-depth-2 control_property_bar"
                             style={{
                                 borderRadius: '0 0 10px 0', backgroundImage: 'linear-gradient(to bottom, #955a90, #7f5a95)',
-                                height: '755px', overflow: 'auto' }}>
+                                height: '755px', overflow: 'auto'
+                            }}>
                             <p style={{ paddingTop: '10px' }}><b>Add</b> controls to the edit window by selecting them from the left toolbar.</p>
                             <p style={{ paddingTop: '10px' }}><b>Select</b> a control in the edit window by clicking it.</p>
                             <p style={{ paddingTop: '10px' }}>You can freely <b>drag</b>, <b>resize</b>, and
