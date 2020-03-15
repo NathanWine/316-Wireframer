@@ -15,7 +15,7 @@ class WireframeLinks extends React.Component {
         const wireframes = this.props.wireframes;
         console.log(wireframes);
         return (
-            <div>
+            <div style={{marginTop: "52px"}}>
                 <Collection header="Recent Work">
                     {wireframes && wireframes.map(wireframe => (
                         wireframe.ownerid === this.props.auth.uid ?

@@ -259,7 +259,7 @@ class EditScreen extends Component {
                         goBack={this.goBack} changeName={this.changeName} zoom={this.state.zoom} changeWidth={this.changeWidth}
                         changeHeight={this.changeHeight} updateDimensions={this.updateDimensions} wireframe={wireframe} />
                     <div onMouseDown={this.removeFocus} className="col s8 center-align no_padding"
-                        style={{ position: 'relative', overflow: 'auto', height: 'inherit', backgroundImage: 'linear-gradient(to bottom, #808080, #484848)' }}>
+                        style={{ position: 'relative', overflow: 'auto', height: 'inherit', backgroundImage: 'linear-gradient(to bottom, #bababa, #757575)' }}>
                         <div className="grey lighten-3" style={{ height: this.state.height, width: this.state.width, textAlign: 'left', transform: scale, transformOrigin: '0 0' }}>
                             {controls && controls.map(control => (
                                 focus === control ?
