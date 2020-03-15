@@ -1,0 +1,23 @@
+{
+  "files": {
+    "main.css": "/Wireframer/static/css/main.2910785e.chunk.css",
+    "main.js": "/Wireframer/static/js/main.7cda1b5d.chunk.js",
+    "main.js.map": "/Wireframer/static/js/main.7cda1b5d.chunk.js.map",
+    "runtime-main.js": "/Wireframer/static/js/runtime-main.7af2b8c1.js",
+    "runtime-main.js.map": "/Wireframer/static/js/runtime-main.7af2b8c1.js.map",
+    "static/js/2.bcd88c2f.chunk.js": "/Wireframer/static/js/2.bcd88c2f.chunk.js",
+    "static/js/2.bcd88c2f.chunk.js.map": "/Wireframer/static/js/2.bcd88c2f.chunk.js.map",
+    "index.html": "/Wireframer/index.html",
+    "precache-manifest.11cffff3b45142577612e6b0f7bf07e4.js": "/Wireframer/precache-manifest.11cffff3b45142577612e6b0f7bf07e4.js",
+    "service-worker.js": "/Wireframer/service-worker.js",
+    "static/css/main.2910785e.chunk.css.map": "/Wireframer/static/css/main.2910785e.chunk.css.map",
+    "static/js/2.bcd88c2f.chunk.js.LICENSE": "/Wireframer/static/js/2.bcd88c2f.chunk.js.LICENSE",
+    "static/media/css.css": "/Wireframer/static/media/UMBXrPdOoHOnxExyjdBeaiPdA4M5.e12c9c5a.woff2"
+  },
+  "entrypoints": [
+    "static/js/runtime-main.7af2b8c1.js",
+    "static/js/2.bcd88c2f.chunk.js",
+    "static/css/main.2910785e.chunk.css",
+    "static/js/main.7cda1b5d.chunk.js"
+  ]
+}
