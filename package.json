@@ -2,7 +2,7 @@
   "name": "wireframer",
   "version": "0.1.0",
   "private": true,
-  "homepage": "https://NathanWine.github.io/Wireframer/",
+  "homepage": "https://NathanWine.github.io/Wireframer",
   "dependencies": {
     "firebase": "^7.5.0",
     "materialize-css": "^1.0.0",
